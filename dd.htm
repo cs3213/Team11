@@ -69,7 +69,7 @@
 	</div>
 	<div style="float:left;">
 		Output Area<br>
-		<textarea style="float:left;width:400px;height:400px;" id="commandTextArea">{{ commandData | json }}</textarea>
+		<textarea style="float:left;width:400px;height:400px;" id="commandTextArea" readonly="">{{ commandData | json }}</textarea>
 	</div>
 	
 
@@ -213,6 +213,10 @@
 				$scope.initInnerSortables();
 				$scope.initInputElements();
 
+				// Hack to prevent two $apply from running simultaneously
+				setTimeout(function(){
+					$scope.updateCommandData($scope)
+				}, 1);
 			}
 
 		});
