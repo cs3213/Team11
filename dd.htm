@@ -62,7 +62,16 @@
 
 	</div>
 
-	<textarea style="float:left;width:400px;height:400px;">{{ commandData | json }}</textarea>
+	<div style="float:left;">
+		Input Area<br>
+		<textarea style="float:left;width:400px;height:400px;" id="inputTextArea"></textarea><br>
+		<input type="button" value="Update workspace" ng-click="refresh()">
+	</div>
+	<div style="float:left;">
+		Output Area<br>
+		<textarea style="float:left;width:400px;height:400px;" id="commandTextArea">{{ commandData | json }}</textarea>
+	</div>
+	
 
 	<script>
 		var App = angular.module('commands-drag-and-drop-demo', ['ui.utils']);
@@ -132,7 +141,7 @@
 				});
 
 			}
-
+			
 			$scope.processCommandElements = function(element){
 
 				var items = element.children();
@@ -171,7 +180,40 @@
 				return commandData;
 			}
 
-			console.log($scope.initInnerSortables);
+			$scope.populateCommandElements = function(commandData, rootElement){
+				console.log(commandData, rootElement);
+
+				for (var i=0; i<commandData.length; i++){
+					var c = commandData[i];
+					console.log("c", c);
+					var toolboxItem = $("#toolbox").find("li[data-command|='"+c.title+"']");
+					var item = $(toolboxItem).clone();
+					var inputs = item.children();
+					for (var j=0; j<inputs.length; j++){
+						var inputElement = inputs[j];
+						if ( $(inputElement).prop("tagName") == "INPUT" || $(inputElement).prop("tagName") == "SELECT" ) {
+							var attributeName = $(inputElement).attr("name");
+							$(inputElement).val(commandData[i][attributeName]);
+						}
+					}
+					if (item.hasClass("sub-commands-allowed")) {
+						item.find(".command-inner-sortable").html("");
+						$scope.populateCommandElements(commandData[i].commands, item.find(".command-inner-sortable"))
+					}
+					$(rootElement).append(item);
+				}
+			}
+
+			$scope.refresh = function(){
+				console.log($("#inputTextArea").val());
+
+				$("#workspace").html("");
+				$scope.populateCommandElements($.parseJSON($("#inputTextArea").val()), $("#workspace"));
+
+				$scope.initInnerSortables();
+				$scope.initInputElements();
+
+			}
 
 		});
 
