@@ -39,7 +39,11 @@ VisualIDE
 .service('characterService', function() {
 	/// this service provides the character
 	console.log('characterService initialized from app-services.js');
-	
+	var nextTickTime = 0;
+	var timePerTick = 500;
+	var xMoved = 0;
+	var yMoved = 0;
+
 	this.costumes = [
 		'pikachu',
 	];
@@ -62,6 +66,77 @@ VisualIDE
 			'scale'		: $scale,
 			'source'	: this.costumes[$costumeId],
 		};
+	};
+
+	this.reposition = function ($xCoord, $yCoord){
+		console.log("characterService.repositon() called");
+		this.config.source.style.left = xCoord;
+		this.config.source.style.top = yCoord;
+	};
+
+	this.setX = function($xCoord){
+		console.log("characterService.setX() called");
+		this.config.source.style.left = xCoord;
+	};
+
+	this.setY = function($yCoord){
+		console.log("characterService.setY() called");
+		this.config.source.style.top = yCoord;
+	};
+
+	this.hide = function(){
+		this.config.source.style.visibility = "hidden";	
+	};
+
+	this.show = function(){
+		this.config.source.style.visibility = "visible";
+	};
+	//speed : pixels per second?
+	this.move = function($speed, $x, $y, $newMovement = true){
+		console.log("characterService.move function called");
+
+		if(newMovement){
+			xMoved = 0;
+			yMoved = 0;
+		}
+		var startTime = Date.getTime();
+		var currentTime = startTime;
+		//convert to milisecs to standardize
+		var unitX = ((x/speed) / 1000) * timePerTick;
+		var unitY = ((y/speed) / 1000) * timePerTick;
+
+		/*
+		while(xMoved != x || yMoved != y){
+
+			if(tick()){
+				xMoved += unitX;
+				yMoved =+ unitY;
+				this.source.style.left += unitX;
+				this.source.style.top += unitY;
+			}
+
+		}
+		*/
+
+		xMoved += unitX;
+		yMoved += unitY;
+		this.source.style.left += unitX;
+		this.source.style.top += unitY;
+		//if haven't reached destination
+		if(xMoved != x || yMoved != y)
+			setTimeout(move(speed,x,y, false),timePerTick);
+
+	};
+
+	this.tick = function(){
+		var currentTime = Date.getTime();
+		if(currentTime < nextTickTime){
+			return false;
+		}
+		else{
+			nextTickTime = currentTime + timePerTick;
+			return true;
+		}
 	};
 })
 .service('commandProcessor', ['backgroundService', 'characterService', function(backgroundService, characterService) {
