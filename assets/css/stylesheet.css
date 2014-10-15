@@ -1,0 +1,32 @@
+li.command-element {
+	list-style: none;
+	background-color: #FFF;
+	color:#000;
+	margin: 5px;
+	padding: 5px;
+	width: 150px;
+	display:list-item;
+	border:1px solid #AAA;
+	border-radius:5px;
+}
+
+li.command-element input {
+	border:1px solid #AAA;
+}
+
+.command-inner-sortable {
+	min-height: 30px;
+	background-color: #CCC;
+}
+
+.command-workspace {
+	min-height: 30px;
+	background-color: #CCC;
+}
+
+
+.command-trash {
+	width:30px;
+	height:30px;
+	background-color: #FFF;
+}

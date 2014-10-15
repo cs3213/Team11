@@ -90,7 +90,7 @@ VisualIDE.controller('commandControl', function($scope, $element, $rootScope) {
 	$scope.trashSortableParams = {
 		connectWith: "#workspace, .command-inner-sortable, #trash",
 	    deactivate: function(event, ui){
-	    	$(event.target).html("Trash here");
+	    	$(event.target).html('<i class="fa fa-trash"></i>');
 	    }
 	};
 
