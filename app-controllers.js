@@ -101,12 +101,12 @@ VisualIDE
 	$scope.trashSortableParams = {
 		connectWith: "#workspace, .command-inner-sortable, #trash",
 	    deactivate: function(event, ui){
-	    	$(event.target).html('<i class="fa fa-trash"></i>');
+	    	$(event.target).html('');
 	    }
 	};
 
 	$scope.initInnerSortables = function(){
-		$( ".command-inner-sortable" ).sortable({
+		$( "#workspace .command-inner-sortable" ).sortable({
     		connectWith: "#workspace, .command-inner-sortable, #trash",
 		    deactivate: function(event, ui){
 		    	$scope = angular.element(event.target).scope();

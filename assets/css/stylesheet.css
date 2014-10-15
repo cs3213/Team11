@@ -1,3 +1,8 @@
+.command-toolbox ul {
+	margin:0px;
+	padding:0px;
+}
+
 li.command-element {
 	list-style: none;
 	background-color: #FFF;
@@ -11,22 +16,65 @@ li.command-element {
 }
 
 li.command-element input {
-	border:1px solid #AAA;
+	border:1px solid #DDD;
+	font-size:0.9em;
+	border-radius:10px;
+	text-align:center;
 }
 
 .command-inner-sortable {
+	min-height: 10px;
+}
+
+.command-workspace .command-inner-sortable {
 	min-height: 30px;
-	background-color: #CCC;
 }
 
 .command-workspace {
-	min-height: 30px;
+	margin:0px;
+	padding:5px 5px 30px 0px;
+	min-height:100px;
 	background-color: #CCC;
+	width:160px;
+	border-radius:5px;
 }
 
+.command-workspace ul {
+	margin:0px;
+	padding:0px 0px 30px 0px;
+	min-height:100px;
+}
+
+.command-toolbox p, .command-workspace-outer p {
+	color:#FFF;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+.command-trash-outer {
+	position:relative;
+	left:0px;
+	top:0px;
+}
+
+.command-trash-icon {
+	width:100px;
+	height:100px;
+	font-size:50px;
+	color:#FFF;
+	position:absolute;
+	left:0px;
+	top:0px;
+	text-align: center;
+	vertical-align: middle;
+}
 
 .command-trash {
-	width:30px;
-	height:30px;
-	background-color: #FFF;
+	width:100px;
+	height:100px;
+	font-size:36px;
+	color:#FFF;
+	position:absolute;
+	left:0px;
+	top:0px;
 }
