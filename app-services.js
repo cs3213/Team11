@@ -10,17 +10,17 @@ VisualIDE
 	/// this service provides the background image
 	console.log('backgroundService initialized from app-services.js');
 	this.backgrounds = [
-		'binding_dark',
-		'congruent_outline',
-		'halftone',
-		'hoffman',
-		'ps_neutral',
-		'seamless_paper_texture',
-		'small_steps',
-		'squared_metal',
-		'stardust',
-		'tree_bark',
-		'triangular'
+	'binding_dark',
+	'congruent_outline',
+	'halftone',
+	'hoffman',
+	'ps_neutral',
+	'seamless_paper_texture',
+	'small_steps',
+	'squared_metal',
+	'stardust',
+	'tree_bark',
+	'triangular'
 	];
 	this.config = {
 		'scale' 	: 10,					// default background scale
@@ -36,7 +36,7 @@ VisualIDE
 		this.config.scale = $scale;
 	};
 })
-.service('characterService', function() {
+.service('characterService', function($timeout) {
 	/// this service provides the character
 	console.log('characterService initialized from app-services.js');
 	var nextTickTime = 0;
@@ -45,7 +45,7 @@ VisualIDE
 	var yMoved = 0;
 
 	this.costumes = [
-		'pikachu',
+	'pikachu',
 	];
 	this.config = {
 		'id'		: 0,
@@ -124,7 +124,7 @@ VisualIDE
 		this.source.style.top += unitY;
 		//if haven't reached destination
 		if(xMoved != x || yMoved != y)
-			setTimeout(move(speed,x,y, false),timePerTick);
+			$timeout(move(speed,x,y, false),timePerTick);
 
 	};
 
@@ -142,6 +142,9 @@ VisualIDE
 .service('commandProcessor', ['backgroundService', 'characterService', function(backgroundService, characterService) {
 	/// this service contains the functions for the actions to call
 	console.log('commandProcessor initialized from app-services.js');
+	
+	var commandsInterval = 50;
+	/*
 	this.execute = function($elem, $attr, $command) {
 		$commandSplit = split(trim($command), " ");
 		$commandLength = $commandSplit.length;
@@ -150,57 +153,156 @@ VisualIDE
 		}
 		switch($commandSplit[0]) {
 			case 'background': // background 1
-				this.changeBackground($commandSplit[1]);
-				break;
+			this.changeBackground($commandSplit[1]);
+			break;
 			case 'costume': // costume 3
-				this.changeCostume($commandSplit[1]);
-				return true;
-				break;
+			this.changeCostume($commandSplit[1]);
+			return true;
+			break;
 			case 'endrepeat':
 				// TODO
 				return true;
 				break;
 			case 'hide': // hide
-				this.hide($elem);
-				return true;
-				break;
+			this.hide($elem);
+			return true;
+			break;
 			case 'move': // move up 3, move left 8
-				switch($commandSplit[1]) {
-					case 'down':
-						this.move($elem, 0, -$commandSplit[2]);
-						break;
-					case 'left':
-						this.move($elem, -$commandSplit[2], 0);
-						break;
-					case 'right':
-						this.move($elem, $commandSplit[2], 0);
-						break;
-					case 'up':
-						this.move($elem, 0, $commandSplit[2]);
-						break;
-				}
-				return true;
+			switch($commandSplit[1]) {
+				case 'down':
+				this.move($elem, 0, -$commandSplit[2]);
 				break;
+				case 'left':
+				this.move($elem, -$commandSplit[2], 0);
+				break;
+				case 'right':
+				this.move($elem, $commandSplit[2], 0);
+				break;
+				case 'up':
+				this.move($elem, 0, $commandSplit[2]);
+				break;
+			}
+			return true;
+			break;
 			case 'repeat':
 				// TODO
 				return true;
 				break;
 			case 'set': // set x 312, set y 794
-				if($commandSplit[1] == 'x') {
-					this.setX($commandSplit[2]);
-				} else if($commandSplit[1] == 'y') {
-					this.setY($commandSplit[2]);
-				}
-				break;
+			if($commandSplit[1] == 'x') {
+				this.setX($commandSplit[2]);
+			} else if($commandSplit[1] == 'y') {
+				this.setY($commandSplit[2]);
+			}
+			break;
 			case 'show': // show
-				this.show();
-				return true;
-				break;
+			this.show();
+			return true;
+			break;
 		}
 		
 	};
-	this.setX = function($elem, $xCoord) {
-		console.log('setX was called from service.commandProcessor');
+	*/
+
+	this.parseCommands = function(commands){
+		var currentExecutionIndex = 0;
+
+		for(currentExecutionIndex = 0; currentExecutionIndex < commands.length; currentExecutionIndex++){
+			cmd = commands[currentExecutionIndex];
+			execute(cmd);
+			/*
+			if(!isRepeat(cmd)){
+				execute(commands[currentExecutionIndex]);
+				currentExecutionIndex++;
+			}
+			//if repeat block start
+			else if(isRepeat(cmd)){
+				lastRepeatBlockIndex = currentExecutionIndex;
+				parseRepeat(cmd.commands, cmd.count);
+			}
+			*/
+		}
+	};
+
+	this.parseRepeat = function(commands, numberOfLoops){
+		loopExecutionIndex = 0;
+		if(numberOfLoops < 0)
+			return;
+		while(true){
+			for(loopExecutionIndex = 0; loopExecutionIndex < commands.length; loopExecutionIndex++){
+
+				cmd = commands[loopExecutionIndex];
+				execute(cmd);
+				/*
+				if(!isRepeat(cmd)){
+					execute(commands[loopExecutionIndex].commands);
+					loopExecutionIndex++;
+				}
+				//if repeat block start
+				else if(isRepeat(cmd)){
+					lastRepeatBlockIndex = loopExecutionIndex;
+					parseRepeat(cmd.commands, cmd.count);
+				}
+				*/
+			}
+		numberOfLoops--;
+		//terminate repeat loop if no more repeats
+		if(numberOfLoops < 0)
+			break;
+		}
+	};
+	
+this.execute = function(cmd){
+	var pixelsPerStep = 5;
+	switch(cmd.title){
+		case 'setX':
+			console.log("setX: " + cmd.x);
+			characterService.setX(cmd.x);
+			break;
+		case 'setY':
+			console.log("setY: " + cmd.y);
+			characterService.setY(cmd.y);
+			break;
+		case 'show':
+			console.log("show");
+			characterService.show();
+			break;
+		case 'hide':
+			console.log("hide");
+			characterService.hide();
+			break;
+		case 'move':
+			console.log("move:" + cmd.count);
+			characterService.move(20,cmd.count*pixelsPerStep,0,true);
+			break;
+		case 'changeBackground': // background 1
+			this.changeBackground(cmd.costume);
+			break;
+		case 'changeCostume': // costume 3
+			this.changeCostume(cmd.costume);
+			return true;
+			break;
+		case 'repeat':
+			parseRepeat(cmd.commands, cmd.count);
+			break;
+		
+	}
+};
+
+
+this.getRepeatTimes = function(cmd){
+	if(isRepeat(cmd))
+		return cmd.count;
+	return 0;
+};
+
+this.isRepeat = function(cmd){
+	return (cmd.title == "repeat");
+};
+
+/*
+this.setX = function($elem, $xCoord) {
+	console.log('setX was called from service.commandProcessor');
 		// set the x coordinate of $elem to $xCoord
 		
 	};
@@ -223,6 +325,7 @@ VisualIDE
 		// and $ySteps steps on the y-axis
 		
 	};
+	*/
 	this.changeCostume = function($elem, $costumeId) {
 		console.log('changeCostume was called from service.commandProcessor');
 		characterService.changeCostume($elem, $costumeId);
@@ -231,11 +334,13 @@ VisualIDE
 		console.log('changeBackground was called from service.commandProcessor');
 		backgroundService.changeImage($backgroundId);
 	};
+	/*
 	this.repeat = function($elem, $nTimes) {
 		console.log('repeat was called from service.commandProcessor');
 		// get the children of the elems and repeat it $nTimes times
 		
 	};
+	*/
 }])
 .service('pageService', function() {
 	/// this service provides the page meta data
