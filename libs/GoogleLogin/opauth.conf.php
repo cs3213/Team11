@@ -13,7 +13,7 @@ $config = array(
  *  - eg. if Opauth is reached via http://example.org/auth/, path is '/auth/'
  *  - if Opauth is reached via http://auth.example.org/, path is '/'
  */
-	'path' => '/api-auth-google/',
+	'path' => '/google/login/',
 
 /**
  * Callback URL: redirected to after authentication, successful or otherwise
