@@ -23,7 +23,7 @@ VisualIDE
 	$scope.save = function() {
 		alert("todo!");
 	};
-	$scope.commandsInclude = "commands.htm";
+	$scope.commandsInclude = "templates/commands.htm";
 }])
 .controller('authController', ['$scope', function($scope) {
 	console.log('pageController initialized from app-controllers.js');
