@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html ng-app="commands-drag-and-drop-demo">
+<head lang="en">
+	<meta charset="utf-8">
+	<title>Commands Drag and Drop Demo</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+	<script src="app.js"></script>
+	<script src="ui-utils.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+	<style>
+		ul { list-style-type: none; margin: 0; padding: 0; margin-bottom: 10px; }
+		li { margin: 5px; padding: 5px; width: 150px; }
+	</style>
+</head>
+<body ng-controller="oneCtrl">
+	<div style="float:left;" id="toolbox">
+		<ul>
+			<li class="ui-state-default" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">setX(<input type="text" size="2" name="x">)</li>
+			<li class="ui-state-default" ui-jq="draggable" data-command="setY" ui-options="commandDraggableParams">setY(<input type="text" size="2" name="y">)</li>
+			<li class="ui-state-default" ui-jq="draggable" data-command="show" ui-options="commandDraggableParams">show</li>
+			<li class="ui-state-default" ui-jq="draggable" data-command="hide" ui-options="commandDraggableParams">hide</li>
+			<li class="ui-state-default" ui-jq="draggable" data-command="move" ui-options="commandDraggableParams">move(<input type="text" size="2" name="count">)</li>
+			<li class="ui-state-default" ui-jq="draggable" data-command="changeCostume" ui-options="commandDraggableParams">changeCostume <select name="costume">
+				<option value="red">Red T-shirt</option>
+				<option value="blue">Blue T-shirt</option>
+				<option value="green">Green T-shirt</option>
+				<option value="yellow">Yellow T-shirt</option>
+			</select>
+			</li>
+			<li class="ui-state-default" ui-jq="draggable" data-command="changeBackground" ui-options="commandDraggableParams">changeBackground <select name="costume">
+				<option value="house">House</option>
+				<option value="garden">Garden</option>
+				<option value="road">Road</option>
+				<option value="pond">Pond</option>
+			</select></li>
+			<li class="ui-state-default sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">repeat(<input type="text" size="2" name="count">)
+				<ul class="command-inner-sortable" ui-jq="sortable" ui-options="workspaceSortableParams" style="min-height:100px; background-color:#CCC;">  
+					<li class="ui-state-default" ui-jq="draggable" ui-options="commandDraggableParams">Item 3</li>
+					<li class="ui-state-default" ui-jq="draggable" ui-options="commandDraggableParams">Item 4</li>
+					<li class="ui-state-default" ui-jq="draggable" ui-options="commandDraggableParams">Item 5</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+	<div style="float:left;">
+		<p>Code</p>
+		<ul id="workspace" ui-jq="sortable" ui-options="workspaceSortableParams" style="background-color:#CCC;min-width:200px;min-height:100px;">
+
+			<li class="ui-state-default">Item 3</li>
+			<li class="ui-state-default">Item 4</li>
+			<li class="ui-state-default">Item 5</li>
+		</ul>
+	</div>
+
+	<div style="float:left;">
+		<div id="trash" ui-jq="sortable" ui-options="trashSortableParams" style="width:200px; height:100px; background-color:#AAA;">
+			Trash
+		</div>
+
+	</div>
+
+	<div style="float:left;">
+		Input Area<br>
+		<textarea style="float:left;width:400px;height:400px;" id="inputTextArea"></textarea><br>
+		<input type="button" value="Update workspace" ng-click="refresh()">
+	</div>
+	<div style="float:left;">
+		Output Area<br>
+		<textarea style="float:left;width:400px;height:400px;" id="commandTextArea" readonly="">{{ commandData | json }}</textarea>
+	</div>
+	
+
+	<script>
+		var App = angular.module('commands-drag-and-drop-demo', ['ui.utils']);
+
+		App.controller('oneCtrl', function($scope, $element) {
+			console.log("controller element", $element);
+
+			$scope.initInputElements = function(){
+				$($element).find("input, select").change(function(){
+					$scope.updateCommandData($scope);
+				});
+			}
+			$scope.initInputElements();
+
+			$scope.commandData = [];
+
+			$scope.commandDraggableParams = {
+	            helper: "clone",
+      			revert: "invalid",
+      			connectToSortable: "#workspace, .command-inner-sortable",
+        	};
+
+        	$scope.workspaceSortableParams = {
+        		connectWith: "#workspace, .command-inner-sortable, #trash",
+			    deactivate: function(event, ui){
+			    	$scope = angular.element(event.target).scope();
+			    	console.log($scope);
+			        // We run this to apply the sortable to all the newly created sortables (created when you drag out the repeat)
+			        $scope.initInnerSortables();
+			        $scope.updateCommandData($scope);
+			    }
+			};
+
+			$scope.trashSortableParams = {
+        		connectWith: "#workspace, .command-inner-sortable, #trash",
+			    deactivate: function(event, ui){
+			    	$(event.target).html("Trash here");
+			    }
+			};
+
+			$scope.initInnerSortables = function(){
+				$( ".command-inner-sortable" ).sortable({
+	        		connectWith: "#workspace, .command-inner-sortable, #trash",
+				    deactivate: function(event, ui){
+				    	$scope = angular.element(event.target).scope();
+				        // We run this to apply the sortable to all the newly created sortables (created when you drag out the repeat)
+				        $scope.initInnerSortables();
+				        $scope.updateCommandData($scope);
+				    }
+				});
+
+				$scope.initInputElements();
+			}
+
+			$scope.updateCommandData = function($scope){
+				var workspaceItems = $( "#workspace" ).children();
+
+				var workspaceElement = $( "#workspace" );
+				/*$scope.commandData = [];
+				for (var i=0; i < workspaceItems.length; i++){
+					$scope.$apply(function () {
+						$scope.commandData[i] = $(workspaceItems[i]).html();
+					});
+				}*/
+				$scope.$apply(function () {
+					$scope.commandData = $scope.processCommandElements(workspaceElement);
+				});
+
+			}
+			
+			$scope.processCommandElements = function(element){
+
+				var items = element.children();
+
+				var commandData = [];
+				for (var i=0; i < items.length; i++){
+					var item = $(items[i]);
+					if (item.hasClass("sub-commands-allowed")) {
+						commandData[i] = {
+							//title: item.text(),
+							title: item.data("command"),
+							commands: $scope.processCommandElements(item.children(".command-inner-sortable"))
+						}
+						var inputs = item.children();
+						for (var j=0; j<inputs.length; j++){
+							if ( $(inputs[j]).prop("tagName") == "INPUT" || $(inputs[j]).prop("tagName") == "SELECT" ) {
+								var name = $(inputs[j]).attr("name");
+								var value = $(inputs[j]).val();
+								commandData[i][name] = value;
+							}
+						}
+					}else{
+						commandData[i] = {
+							//title: item.text()
+							title: item.data("command"),
+						}
+						var inputs = item.find("input, select");
+						for (var j=0; j<inputs.length; j++){
+							var name = $(inputs[j]).attr("name");
+							var value = $(inputs[j]).val();
+							commandData[i][name] = value;
+						}
+					}
+					
+				}
+				return commandData;
+			}
+
+			$scope.populateCommandElements = function(commandData, rootElement){
+				console.log(commandData, rootElement);
+
+				for (var i=0; i<commandData.length; i++){
+					var c = commandData[i];
+					console.log("c", c);
+					var toolboxItem = $("#toolbox").find("li[data-command|='"+c.title+"']");
+					var item = $(toolboxItem).clone();
+					var inputs = item.children();
+					for (var j=0; j<inputs.length; j++){
+						var inputElement = inputs[j];
+						if ( $(inputElement).prop("tagName") == "INPUT" || $(inputElement).prop("tagName") == "SELECT" ) {
+							var attributeName = $(inputElement).attr("name");
+							$(inputElement).val(commandData[i][attributeName]);
+						}
+					}
+					if (item.hasClass("sub-commands-allowed")) {
+						item.find(".command-inner-sortable").html("");
+						$scope.populateCommandElements(commandData[i].commands, item.find(".command-inner-sortable"))
+					}
+					$(rootElement).append(item);
+				}
+			}
+
+			$scope.refresh = function(){
+				console.log($("#inputTextArea").val());
+
+				$("#workspace").html("");
+				$scope.populateCommandElements($.parseJSON($("#inputTextArea").val()), $("#workspace"));
+
+				$scope.initInnerSortables();
+				$scope.initInputElements();
+
+				// Hack to prevent two $apply from running simultaneously
+				setTimeout(function(){
+					$scope.updateCommandData($scope)
+				}, 1);
+			}
+
+		});
+
+		/*
+		App.value('uiJqConfig', {
+	        draggable: {
+	            helper: "clone",
+      			revert: "invalid",
+      			connectToSortable: ".sortable"
+        	},
+        	sortable: {
+        		connectWith: ".sortable, #trash"
+        	}
+    	});
+		*/
+	</script>
+</body>
+</html>
