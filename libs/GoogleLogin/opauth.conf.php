@@ -25,8 +25,8 @@ $config = array(
  * 
  * NOTE: PLEASE CHANGE THIS INTO SOME OTHER RANDOM STRING
  */
-	'security_salt' => 'oAJD8e9whcOUHEFojsdhf8fwuehHEFhsd8dfg9732ihDSJFjiU3uhiuEWFu3hu34i289S',
-	'host' => 'localhost',
+	'security_salt' => 'oAJD8e9whcOU933ojsdhf8fwuehHEFhsd8dfg9732ih11JFjiU3uhiuEW223hu34i289S',
+	'host' => 'http://'.$_SERVER['SERVER_NAME'],
 /**
  * Strategy
  * Refer to individual strategy's documentation on configuration requirements.
