@@ -40,9 +40,13 @@
 						
 						<div class="clearfix"></div>
 						
+						<!--
 						<div ui-sortable ng-model="actions">
 							<span class="well well-sm form-control" ng-repeat="action in actions">{{ action }}</span>
 						</div>
+						-->
+
+						<ng-include src="commandsInclude"></ng-include>
 					</div>
 					<div ng-show="tab===1" ng-controller="actionController">
 						<div class="navbar navbar-app navbar-absolute-top" style="border-radius:0px;">
@@ -108,6 +112,7 @@
 		<script src="/assets/js/angular-ui-bootstrap.js"></script>
 		<script src="/assets/js/angular-ui-sortable.js"></script>
 		<script src="/assets/js/mobile-angular-ui.min.js"></script>
+		<script src="/assets/js/ui-utils.js"></script>
 		<script src="/app.js"></script>
 		<script src="/app-controllers.js"></script>
 		<script src="/app-directives.js"></script>

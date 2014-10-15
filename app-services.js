@@ -92,7 +92,7 @@ VisualIDE
 		this.config.source.style.visibility = "visible";
 	};
 	//speed : pixels per second?
-	this.move = function($speed, $x, $y, $newMovement = true){
+	this.move = function($speed, $x, $y, $newMovement){
 		console.log("characterService.move function called");
 
 		if(newMovement){
