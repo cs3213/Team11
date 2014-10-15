@@ -34,7 +34,7 @@ class GoogleStrategy extends OpauthStrategy{
 	 * eg. array('scope' => 'email');
 	 */
 	public $defaults = array(
-		'redirect_uri' => '{complete_url_to_strategy}oauth2callback',
+		'redirect_uri' => 'http://localhost:3213/api-auth-google',
 		'scope' => 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 	);
 	
@@ -79,29 +79,30 @@ class GoogleStrategy extends OpauthStrategy{
 				$userinfo = $this->userinfo($results->access_token);
 				
 				$this->auth = array(
-					'provider' => 'Google',
-					'uid' => $userinfo->id,
-					'info' => array(
-						'name' => $userinfo->name,
-						'email' => $userinfo->email,
-						'first_name' => $userinfo->given_name,
-						'last_name' => $userinfo->family_name,
-						'image' => $userinfo->picture
-					),
+					'uid' => $userinfo['id'],
+					'info' => array(),
 					'credentials' => array(
 						'token' => $results->access_token,
 						'expires' => date('c', time() + $results->expires_in)
 					),
 					'raw' => $userinfo
 				);
+
+				if (!empty($results->refresh_token))
+				{
+					$this->auth['credentials']['refresh_token'] = $results->refresh_token;
+				}
 				
-				if (!empty($userinfo->link)) $this->auth['info']['urls']['google'] = $userinfo->link;
+				$this->mapProfile($userinfo, 'name', 'info.name');
+				$this->mapProfile($userinfo, 'email', 'info.email');
+				$this->mapProfile($userinfo, 'given_name', 'info.first_name');
+				$this->mapProfile($userinfo, 'family_name', 'info.last_name');
+				$this->mapProfile($userinfo, 'picture', 'info.image');
 				
 				$this->callback();
 			}
 			else{
 				$error = array(
-					'provider' => 'Google',
 					'code' => 'access_token_error',
 					'message' => 'Failed when attempting to obtain access token',
 					'raw' => array(
@@ -115,7 +116,6 @@ class GoogleStrategy extends OpauthStrategy{
 		}
 		else{
 			$error = array(
-				'provider' => 'Google',
 				'code' => 'oauth2callback_error',
 				'raw' => $_GET
 			);
@@ -133,11 +133,10 @@ class GoogleStrategy extends OpauthStrategy{
 	private function userinfo($access_token){
 		$userinfo = $this->serverGet('https://www.googleapis.com/oauth2/v1/userinfo', array('access_token' => $access_token), null, $headers);
 		if (!empty($userinfo)){
-			return json_decode($userinfo);
+			return $this->recursiveGetObjectVars(json_decode($userinfo));
 		}
 		else{
 			$error = array(
-				'provider' => 'Google',
 				'code' => 'userinfo_error',
 				'message' => 'Failed when attempting to query for user information',
 				'raw' => array(

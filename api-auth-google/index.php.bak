@@ -1,0 +1,7 @@
+<?php
+	$googleLogin = array(
+		'client_id' => '440134525270-nmnf3g5ld0ghcp78ht9vsp8msudgbov8.apps.googleusercontent.com',
+		'client_secret' => 'v_69MPQXEVxGCCV2ftmVkReX',
+		'redirect_uri' => 'http://localhost:3213/api-auth-google',
+	);
+?>

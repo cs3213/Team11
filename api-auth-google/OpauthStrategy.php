@@ -373,8 +373,8 @@ class OpauthStrategy{
 			'content' => $query
 		));
 
-		
 		$stream = array_merge($options, $stream);
+
 		return self::httpRequest($url, $stream, $responseHeaders);	
 	}
 	
