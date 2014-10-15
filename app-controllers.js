@@ -1,5 +1,5 @@
 VisualIDE
-.controller('actionController', ['$scope', function($scope) {
+.controller('actionController', ['$rootScope','$scope', 'commandProcessor', function($rootScope,$scope, commandProcessor) {
 	console.log('actionController initialized from app-controllers.js');
 	$scope.actions = [
 		'set x 24',
@@ -17,7 +17,8 @@ VisualIDE
 		'endrepeat'
 	];
 	$scope.play = function() {
-		alert("todo!");
+		//alert("todo!");
+		commandProcessor.parseCommands($rootScope.commandData);
 	};
 	$scope.save = function() {
 		alert("todo!");
