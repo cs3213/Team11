@@ -18,7 +18,7 @@ $config = array(
 /**
  * Callback URL: redirected to after authentication, successful or otherwise
  */
-	'callback_url' => 'http://localhost:3213/api-auth-google/token.php',
+	'callback_url' => 'http://'.$_SERVER['SERVER_NAME'].(($_SERVER['SERVER_PORT']!=80)?(':'.$_SERVER['SERVER_PORT']):'').'/google/login/',
 	'callback_transport' => '',
 /**
  * A random string used for signing of $auth response.

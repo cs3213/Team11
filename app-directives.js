@@ -32,12 +32,15 @@ VisualIDE
 		}	
 	};
 }])
-.directive('formLogin', function() {
+.directive('formLogin', function($window) {
 	return {
 		restrict: 'AE',
 		templateUrl: './templates/pageLogin.php',
 		link: function(scope, elem, attr) {
 			console.log('formLogin initialized from app-directives.js');
+			scope.login = function() {
+				$window.location = '/google/login'
+			};
 		}
 	};
 })

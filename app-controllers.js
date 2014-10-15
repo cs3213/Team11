@@ -56,10 +56,20 @@ VisualIDE
 .controller('pageMetaData', ['$scope','pageService', function($scope, pageService) {
 	console.log('pageMetaData initialized from app-controllers.js');
 	$scope.page = pageService;
-}]);
-
-
-VisualIDE.controller('commandControl', function($scope, $element, $rootScope) {
+}])
+.controller('sidepanelAbout', function($scope) {
+	console.log('sidepanelAbout initialized from app-controllers.js');
+})
+.controller('sidepanelHelp', function($scope) {
+	console.log('sidepanelHelp initialized from app-controllers.js');
+})
+.controller('sidepanelMain', function($scope) {
+	console.log('sidepanelMain initialized from app-controllers.js');
+})
+.controller('sidepanelObjectives', function($scope) {
+	console.log('sidepanelObjectives initialized from app-controllers.js');
+})
+.controller('commandControl', function($scope, $element, $rootScope) {
 	console.log("controller element", $element);
 
 	$scope.initInputElements = function(){
