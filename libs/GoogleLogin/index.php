@@ -10,6 +10,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/libs/Opauth/OpauthStrategy.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/libs/Opauth/Strategy/Google/GoogleStrategy.php';
 $Opauth = new GoogleStrategy( $config['Strategy']['Google'] , $config);
 var_dump($_SESSION);
+var_dump($_GET);
+var_dump($_POST);
+var_dump($OPauth->auth);
 exit;
 if(isset($_SESSION['opauth'])) {
 	//var_dump($_SESSION['opauth']);
