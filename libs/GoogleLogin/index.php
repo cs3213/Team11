@@ -13,7 +13,7 @@ if(isset($_SESSION['opauth'])) {
 	//var_dump($_SESSION['opauth']);
 	header('Location: /', 301);
 	exit;
-} elseif(isset($_POST)) {
+} elseif(isset($_POST['opauth'])) {
 	var_dump($_POST);
 	var_dump($_SESSION);
 	exit;
