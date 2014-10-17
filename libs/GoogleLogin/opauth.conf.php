@@ -26,6 +26,7 @@ $config = array(
  * NOTE: PLEASE CHANGE THIS INTO SOME OTHER RANDOM STRING
  */
 	'security_salt' => 'oAJD8e9whcOU933ojsdhf8fwuehHEFhsd8dfg9732ih11JFjiU3uhiuEW223hu34i289S',
+	'security_iteration' => 300,
 	'host' => 'http://'.$_SERVER['SERVER_NAME'],
 /**
  * Strategy
