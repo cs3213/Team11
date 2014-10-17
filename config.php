@@ -81,6 +81,16 @@
 				$app->redirect('/google/login/');
 			})->name('ACCESS_GOOGLE_LOGIN_REDIRECT');
 			$app->get('/google/login/', function() use ($app) {
+				$app->render('libs/GoogleLogin/token.php');
+			})->name('ACCESS_GOOGLE_LOGIN');
+			
+			/**
+			 * Google Login page
+			 */
+			$app->get('/google', function() use ($app) {
+				$app->redirect('/google/');
+			})->name('ACCESS_GOOGLE_LOGIN_REDIRECT');
+			$app->get('/google/', function() use ($app) {
 				$app->render('libs/GoogleLogin/index.php');
 			})->name('ACCESS_GOOGLE_LOGIN');
 			
