@@ -13,6 +13,9 @@ if(isset($_SESSION['opauth'])) {
 	//var_dump($_SESSION['opauth']);
 	header('Location: /', 301);
 	exit;
+} elseif(isset($_POST)) {
+	var_dump($_POST);
+	exit;
 } elseif(isset($_GET['code'])) {
 	$Opauth->oauth2callback();
 } else {
