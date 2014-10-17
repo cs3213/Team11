@@ -34,7 +34,7 @@ class GoogleStrategy extends OpauthStrategy{
 	 * eg. array('scope' => 'email');
 	 */
 	public $defaults = array(
-		'redirect_uri' => 'http://cs3213.joeir.net',
+		'redirect_uri' => 'http://cs3213.joeir.net/google/login',
 		'scope' => 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 	);
 	
