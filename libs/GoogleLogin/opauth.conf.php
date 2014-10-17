@@ -19,7 +19,7 @@ $config = array(
  * Callback URL: redirected to after authentication, successful or otherwise
  */
 	'callback_url' => 'http://'.$_SERVER['SERVER_NAME'].(($_SERVER['SERVER_PORT']!=80)?(':'.$_SERVER['SERVER_PORT']):'').'/google/login/',
-	'callback_transport' => '',
+	'callback_transport' => 'POST',
 /**
  * A random string used for signing of $auth response.
  * 
