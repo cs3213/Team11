@@ -15,6 +15,7 @@ if(isset($_SESSION['opauth'])) {
 	exit;
 } elseif(isset($_POST)) {
 	var_dump($_POST);
+	var_dump($_SESSION);
 	exit;
 } elseif(isset($_GET['code'])) {
 	$Opauth->oauth2callback();
