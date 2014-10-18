@@ -40,9 +40,11 @@ VisualIDE
 	/// this service provides the character
 	console.log('characterService initialized from app-services.js');
 	var nextTickTime = 0;
-	var timePerTick = 500;
+	var timePerTick = 1000;
 	var xMoved = 0;
 	var yMoved = 0;
+	var currentX = 0;
+	var currentY = 0;
 
 	this.costumes = [
 	'pikachu',
@@ -72,16 +74,20 @@ VisualIDE
 		console.log("characterService.repositon() called");
 		this.config.left = xCoord;
 		this.config.top = yCoord;
+		currentX = xCoord;
+		currentY = yCoord;
 	};
 
 	this.setX = function(xCoord){
 		console.log("characterService.setX() called: " + xCoord);
 		this.config.left = xCoord;
+		currentX = xCoord;
 	};
 
 	this.setY = function(yCoord){
 		console.log("characterService.setY() called:" + yCoord);
 		this.config.top = yCoord;
+		currentY = yCoord;
 	};
 
 	this.hide = function(){
@@ -94,43 +100,64 @@ VisualIDE
 	//speed : pixels per second?
 	this.move = function(speed, x, y, newMovement){
 		console.log("characterService.move function called");
-
+		console.log("speed(pixels/s): " + speed);
+		console.log("X to move: " + x);
 		if(newMovement){
 			xMoved = 0;
 			yMoved = 0;
 		}
-		var startTime = Date.getTime();
-		var currentTime = startTime;
+		//var startTime = (new Date()).getTime();
+		//var currentTime = startTime;
 		//convert to milisecs to standardize
-		var unitX = ((x/speed) / 1000) * timePerTick;
-		var unitY = ((y/speed) / 1000) * timePerTick;
 
+		var unitX = (x/speed)  * timePerTick/1000;
+		var unitY = (y/speed)  * timePerTick/1000;
+		console.log("unitX movement: " + unitX);
+		console.log("unitY movement: " + unitY);
+
+		
 		/*
 		while(xMoved != x || yMoved != y){
 
-			if(tick()){
+			if(this.tick()){
 				xMoved += unitX;
-				yMoved =+ unitY;
-				this.source.style.left += unitX;
-				this.source.style.top += unitY;
+				yMoved += unitY;
+				this.config.left = currentX + unitX;
+				this.config.top = currentY + unitY;
+				console.log("top: " + this.config.top);
+				console.log("left: " + this.config.left);
+				currentX += unitX;
+				currentY += unitY;
 			}
 
 		}
 		*/
 
-		xMoved += unitX;
-		yMoved += unitY;
-		this.config.left += unitX;
-		this.config.top += unitY;
-		//if haven't reached destination
-		if(xMoved != x || yMoved != y)
-			$timeout(move(speed,x,y, false),timePerTick);
+		
+		xMoved = Number(xMoved) + Number(unitX);
+		yMoved = Number(yMoved) + Number(unitY);
 
+		currentX = Number(currentX) + Number(unitX);
+		currentY = Number(currentY) + Number(unitY);
+
+		this.config.left = currentX;
+		this.config.top = currentY;
+
+		
+
+		console.log("left: " + this.config.left);
+		console.log("top: " + this.config.top);
+		//if haven't reached destination
+		if(xMoved != x || yMoved != y){
+			console.log("recursing");
+			$timeout(this.move(speed,x,y, false),timePerTick);
+		}
+		
 	};
 
-/*
+
 	this.tick = function(){
-		var currentTime = Date.getTime();
+		var currentTime = (new Date()).getTime();
 		if(currentTime < nextTickTime){
 			return false;
 		}
@@ -139,7 +166,7 @@ VisualIDE
 			return true;
 		}
 	};
-*/
+
 })
 .service('commandProcessor', ['backgroundService', 'characterService', function(backgroundService, characterService) {
 	/// this service contains the functions for the actions to call
@@ -255,7 +282,7 @@ VisualIDE
 	};
 	
 this.execute = function(cmd){
-	var pixelsPerStep = 5;
+	//var pixelsPerStep = 5;
 	switch(cmd.title){
 		case 'setX':
 			console.log("setX: " + cmd.x);
@@ -275,7 +302,7 @@ this.execute = function(cmd){
 			break;
 		case 'move':
 			console.log("move:" + cmd.count);
-			characterService.move(20,cmd.count*pixelsPerStep,0,true);
+			characterService.move(20,cmd.count,0,true);
 			break;
 		case 'changeBackground': // background 1
 			this.changeBackground(cmd.costume);
