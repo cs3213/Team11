@@ -77,26 +77,31 @@ VisualIDE
 		this.config.top = yCoord;
 		currentX = xCoord;
 		currentY = yCoord;
+		return true;
 	};
 
 	this.setX = function(xCoord){
 		console.log("characterService.setX() called: " + xCoord);
 		this.config.left = xCoord;
 		currentX = xCoord;
+		return true;
 	};
 
 	this.setY = function(yCoord){
 		console.log("characterService.setY() called:" + yCoord);
 		this.config.top = yCoord;
 		currentY = yCoord;
+		return true;
 	};
 
 	this.hide = function(){
 		this.config.visibility = "hidden";	
+		return true;
 	};
 
 	this.show = function(){
 		this.config.visibility = "visible";
+		return true;
 	};
 	//speed : pixels per second?
 	this.move = function(speed, x, y, newMovement){
@@ -111,14 +116,20 @@ VisualIDE
 		//var currentTime = startTime;
 		//convert to milisecs to standardize
 
-
-
 		var unitX = 0;
 		var unitY = 0;
-		if(x > 0)
+		if(x != 0){
 			unitX = (speed)  * Number(timePerTick/1000.00);
-		if(y > 0)
+			if(x < 0){
+				unitX *= -1;
+			}
+		}
+		if(y != 0){
 			unitY = (speed)  * Number(timePerTick/1000.00);
+			if(y < 0){
+				unitY *= -1;
+			}
+		}
 		//console.log("unitX movement: " + unitX);
 		//console.log("unitY movement: " + unitY);
 
@@ -133,6 +144,7 @@ VisualIDE
 		this.config.top = currentY;
 		//$rootScope.$apply();
 
+		
 		/*
 		while(xMoved != x || yMoved != y){
 
@@ -152,7 +164,9 @@ VisualIDE
 
 		//console.log("left: " + this.config.left);
 		//console.log("top: " + this.config.top);
+
 		//if haven't reached destination
+		
 		if(xMoved != x || yMoved != y){
 			
 			var nextExe = Number(timePerTick+delay);
@@ -167,7 +181,11 @@ VisualIDE
 				
 				,nextExe);
 			}
-			
+		else if(xMoved == x && yMoved == y){
+			return true;
+		}
+
+		return false;
 	};
 
 
@@ -177,27 +195,67 @@ VisualIDE
 			return false;
 		}
 		else{
-			nextTickTime = currentTime + timePerTick;
+			nextTickTime = currentTime + timePerTick + delay;
 			return true;
 		}
 	};
 
 })
-.service('commandProcessor', ['backgroundService', 'characterService', function(backgroundService, characterService) {
+.service('commandProcessor', ['$interval','backgroundService', 'characterService', function($interval, backgroundService, characterService) {
 	/// this service contains the functions for the actions to call
 	console.log('commandProcessor initialized from app-services.js');
 	
-	var commandsInterval = 200;
+	var commandsInterval = 1000;
 
 
 	this.parseCommands = function(commands){
 		var currentExecutionIndex = 0;
 
+		/*
+		working
 		for(currentExecutionIndex = 0; currentExecutionIndex < commands.length; currentExecutionIndex++){
 			cmd = commands[currentExecutionIndex];
 			this.execute(cmd);
 		}
+		*/
+
+		/*
+		not working
+		currentExecutionIndex = -1;
+		var lastSuccess = true;
+		while(currentExecutionIndex < commands.length){
+
+			if(lastSuccess){
+				currentExecutionIndex++;
+				cmd = commands[currentExecutionIndex];
+				lastSuccess = this.execute(cmd);
+			}
+
+		}
+		*/
+		var that = this;
+		var iterations = commands.length;
+		$interval(
+			function(){
+			that.dequeueNexecute(commands);
+			},
+			commandsInterval
+			,iterations
+			,true
+		  );
+
+
 	};
+
+	this.dequeueNexecute = function(commands){
+		if(commands.length <= 0)
+			return;
+		console.log("dequeue and executing...");
+		cmdToRun = commands.shift();
+		this.execute(cmdToRun);
+		commands.push(cmdToRun);
+	};
+
 
 	this.mainLoop = function(commands){
 		var currentExecutionIndex = 0;
@@ -236,39 +294,40 @@ VisualIDE
 	
 this.execute = function(cmd){
 	//var pixelsPerStep = 5;
+	var pass = true;
 	switch(cmd.title){
 		case 'setX':
 			console.log("setX: " + cmd.x);
-			characterService.setX(cmd.x);
+			pass = characterService.setX(cmd.x);
 			break;
 		case 'setY':
 			console.log("setY: " + cmd.y);
-			characterService.setY(cmd.y);
+			pass = characterService.setY(cmd.y);
 			break;
 		case 'show':
 			console.log("show");
-			characterService.show();
+			pass = characterService.show();
 			break;
 		case 'hide':
 			console.log("hide");
-			characterService.hide();
+			pass = characterService.hide();
 			break;
 		case 'move':
 			console.log("move:" + cmd.count);
-			characterService.move(50,cmd.count,0,true);
+			pass = characterService.move(50,cmd.count,0,true);
 			break;
 		case 'changeBackground': // background 1
-			this.changeBackground(cmd.costume);
+			pass = this.changeBackground(cmd.costume);
 			break;
 		case 'changeCostume': // costume 3
-			this.changeCostume(cmd.costume);
+			pass = this.changeCostume(cmd.costume);
 			return true;
 			break;
 		case 'repeat':
-			parseRepeat(cmd.commands, cmd.count);
+			pass = parseRepeat(cmd.commands, cmd.count);
 			break;
-		
 	}
+	return pass;
 };
 
 
