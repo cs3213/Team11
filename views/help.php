@@ -11,7 +11,7 @@
 
 <?php
                 $text = '<p style ="color:white">
-  													 <ul>
+    												 <ul><font style = "color:white">
 														 			<li> Logging in
 																	 <p><font size = "2"> Press the red button "Sign in with Google in order to sign in. </br>
                                    To log out, press the log out button that is below the email address.</font></p></li>
@@ -49,6 +49,7 @@
 														 			<li> Viewing changes </br>
                                   <font size = "2"> Press play to see changes that you have made!</font>
 														 			</li>
+                                   </font></ul>
 														</p>';
                 echo ($text);
                 echo "\n";
