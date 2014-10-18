@@ -70,29 +70,29 @@ VisualIDE
 
 	this.reposition = function ($xCoord, $yCoord){
 		console.log("characterService.repositon() called");
-		this.config.source.style.left = xCoord;
-		this.config.source.style.top = yCoord;
+		this.config.left = xCoord;
+		this.config.top = yCoord;
 	};
 
-	this.setX = function($xCoord){
-		console.log("characterService.setX() called");
-		this.config.source.style.left = xCoord;
+	this.setX = function(xCoord){
+		console.log("characterService.setX() called: " + xCoord);
+		this.config.left = xCoord;
 	};
 
-	this.setY = function($yCoord){
-		console.log("characterService.setY() called");
-		this.config.source.style.top = yCoord;
+	this.setY = function(yCoord){
+		console.log("characterService.setY() called:" + yCoord);
+		this.config.top = yCoord;
 	};
 
 	this.hide = function(){
-		this.config.source.style.visibility = "hidden";	
+		this.config.visibility = "hidden";	
 	};
 
 	this.show = function(){
-		this.config.source.style.visibility = "visible";
+		this.config.visibility = "visible";
 	};
 	//speed : pixels per second?
-	this.move = function($speed, $x, $y, $newMovement){
+	this.move = function(speed, x, y, newMovement){
 		console.log("characterService.move function called");
 
 		if(newMovement){
@@ -120,14 +120,15 @@ VisualIDE
 
 		xMoved += unitX;
 		yMoved += unitY;
-		this.source.style.left += unitX;
-		this.source.style.top += unitY;
+		this.config.left += unitX;
+		this.config.top += unitY;
 		//if haven't reached destination
 		if(xMoved != x || yMoved != y)
 			$timeout(move(speed,x,y, false),timePerTick);
 
 	};
 
+/*
 	this.tick = function(){
 		var currentTime = Date.getTime();
 		if(currentTime < nextTickTime){
@@ -138,6 +139,7 @@ VisualIDE
 			return true;
 		}
 	};
+*/
 })
 .service('commandProcessor', ['backgroundService', 'characterService', function(backgroundService, characterService) {
 	/// this service contains the functions for the actions to call
@@ -209,7 +211,7 @@ VisualIDE
 
 		for(currentExecutionIndex = 0; currentExecutionIndex < commands.length; currentExecutionIndex++){
 			cmd = commands[currentExecutionIndex];
-			execute(cmd);
+			this.execute(cmd);
 			/*
 			if(!isRepeat(cmd)){
 				execute(commands[currentExecutionIndex]);
@@ -232,7 +234,7 @@ VisualIDE
 			for(loopExecutionIndex = 0; loopExecutionIndex < commands.length; loopExecutionIndex++){
 
 				cmd = commands[loopExecutionIndex];
-				execute(cmd);
+				this.execute(cmd);
 				/*
 				if(!isRepeat(cmd)){
 					execute(commands[loopExecutionIndex].commands);
