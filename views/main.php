@@ -4,7 +4,7 @@
 </head>
 <body>
 <?php
-                $text = '<p><h1 style="color:white">Main<p></h1>';
+                $text = '<p><h2 style="color:white">Main<p></h2>';
                 echo ($text);
                 echo "\n";
 ?>
