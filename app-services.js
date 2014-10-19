@@ -29,7 +29,7 @@ VisualIDE
 	};
 	this.changeImage = function($backgroundId) {
 		console.log('backgroundService.changeImage() called');
-		this.config.source = this.backgrounds[$backgroundId];
+		this.config.source = $backgroundId;
 	};
 	this.changeScale = function($scale) {
 		console.log('backgroundService.changeScale() called');
@@ -498,10 +498,13 @@ this.isRepeat = function(cmd){
 
 this.changeCostume = function($elem, $costumeId) {
 	console.log('changeCostume was called from service.commandProcessor');
+	console.log($elem);
+	console.log($costumeId);
 	characterService.changeCostume($elem, $costumeId);
 };
 this.changeBackground = function($backgroundId) {
 	console.log('changeBackground was called from service.commandProcessor');
+	console.log($backgroundId);
 	backgroundService.changeImage($backgroundId);
 };
 
