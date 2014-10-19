@@ -125,7 +125,7 @@ VisualIDE
 
 	this.moveHelper = function(x, y, framesRemaining, timeInterval, next) {
 		console.log("movehelper is called", x, y, framesRemaining, timeInterval, next);
-		this.setX (currentX += x, function(){});
+		this.setX (currentX = currentX*1 + x*1, function(){});
 		framesRemaining--;
 		if (framesRemaining > 0) {
 			var that = this;
