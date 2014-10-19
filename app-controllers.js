@@ -25,7 +25,7 @@ VisualIDE
 	$scope.save = function() {
 		//alert("todo!");
 		var progName = window.prompt("Name to save as", "My First Game");
-		$http.post('/api/save', {name: progName, content: $rootScope.commandData}).
+		$http.post('/api/save', {name: progName, content: JSON.stringify($rootScope.commandData)}).
 		success(function(data, status, headers, config) {
 		    // this callback will be called asynchronously
 		    // when the response is available
