@@ -27,6 +27,9 @@
 	 * 
 	 * DESCRIPTION
 	 * 	Retrieves the program with the specified name in INPUT
+	 * 
+	 * TEST
+	 * 	Try /api/load-get?name=TestProgram
 	 */
 
 	namespace VisualIDE;

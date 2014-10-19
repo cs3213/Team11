@@ -20,6 +20,9 @@
 	 * 
 	 * DESCRIPTION
 	 * 	Saves the program with the specified name in INPUT with the specified content
+	 * 
+	 * TEST
+	 * 	try: /api/save-get?name=TestProgram&content=TestContent
 	 */
 
 	namespace VisualIDE;

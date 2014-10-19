@@ -20,6 +20,9 @@
 	 * 
 	 * DESCRIPTION
 	 * 	Retrieves all programs of the logged in user.
+	 * 
+	 * TEST
+	 * 	Try /api/get
 	 */
 	namespace VisualIDE;
 	
@@ -37,13 +40,13 @@
 	$results = DB::get()->saved_programs->select('program_name,lmodified')->where('google_user_id',$_SESSION['opauth']['id']);
 	$returnValue = array();
 	while($result = $results->fetch()) {
-		array_push($returnValue, $result);
+		array_push($returnValue, iterator_to_array($result));
 	}
 	if(count($returnValue) == 0) {
 		echo json_encode(NO_PROGRAMS_AT_ALL);
 		exit;
 	}
-	echo json_encode(iterator_to_array($returnValue));
+	echo json_encode($returnValue);
 	/**
 	 * 	EOF
 	 */
