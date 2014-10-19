@@ -44,28 +44,20 @@
 		echo 'No data detected';
 		exit;
 	}
-	
 	// try to find the entry with name
 	$result = DB::get()->saved_programs->where(array(
 		'google_user_id' => $_SESSION['opauth']['id'],
 		'program_name' => $data->name
-	))->fetch();
-	if($result !== FALSE) {
+	));
+	if($result->fetch() !== FALSE) {
 		// if have, update
-		$result['saved_data'] = $data->content;
-		if($result->update() >= 0) {
+		$updateResult = $result->update(array('saved_data' => $data->content));
+		if($updateResult >= 0) {
 			echo json_encode(UPDATED);
 			exit;
 		}
 	} else {
-		// if not, do an insert IFF there exists no other programs of the same name,
-		// otherwise return an ALREADY_EXISTS
-		$exists = DB::get()->saved_programs->where(
-			'program_name',$data->name)->fetch();
-		if($exists && ($exists->count() > 0)) {
-			echo json_encode(ALREADY_EXISTS);
-			exit;
-		}
+		// if not, do an insert
 		$result = DB::get()->saved_programs->insert(array(
 			'google_user_id'=>$_SESSION['opauth']['id'],
 			'program_name'=>$data->name,
