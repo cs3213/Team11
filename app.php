@@ -19,8 +19,32 @@
 					<ng-view></ng-view>
 				</div>
 			</div>
+			
 			<div ng-controller="authController">
 				<form-login />
+			</div>
+			
+			<div ng-controller="ModalDemoCtrl" style="position:absolute;left:0px;top:0px;z-index:9999;">
+			    <script type="text/ng-template" id="myModalContent.html">
+			        <div class="modal-header">
+			            <h3 class="modal-title">Load Game</h3>
+			        </div>
+			        <div class="modal-body">
+			            <ul>
+			                <li ng-repeat="item in items">
+			                    <a ng-click="selected.item = item">{{ item.program_name }}</a>
+			                </li>
+			            </ul>
+			            Selected: <b>{{ selected.item.program_name }}</b>
+			        </div>
+			        <div class="modal-footer">
+			            <button class="btn btn-primary" ng-click="ok()">OK</button>
+			            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+			        </div>
+			    </script>
+
+			    <button class="btn btn-default" ng-click="open()">Load Game</button>
+			    <!--<div ng-show="selected">Selection from a modal: {{ selected }}</div>-->
 			</div>
 		</div>
 		<div class="sidebar sidebar-right" toggleable parent-active-class="sidebar-right-in" id="rightSidebar"
@@ -105,6 +129,7 @@
 				</div>
 			</div>
 		</div>
+
 		<script src="/assets/js/jquery-1.11.1.min.js"></script>
 		<script src="/assets/js/jquery-ui-1.10.4.min.js"></script>
 		<script src="/assets/js/angular.min.js"></script>
