@@ -3,12 +3,12 @@
 	style="background-color:transparent;color:#e8e8e8;border-radius:0px;">
 	<?php if(isset($_SESSION['opauth'])) { ?>
 	<div class="col-sm-3">
-		<img src="<?php echo $_SESSION['opauth']['auth']['info']['image'] ?>" style="border-radius:100%;max-width:64px;">
+		<img src="<?php echo $_SESSION['opauth']['image_url'] ?>" style="border-radius:100%;max-width:64px;">
 	</div>
 	<div class="col-sm-9">
 		Logged in as:<br />
-		<b><?php echo $_SESSION['opauth']['auth']['info']['name'] ?></b><br />
-		<i><?php echo $_SESSION['opauth']['auth']['info']['email'] ?></i>
+		<b><?php echo $_SESSION['opauth']['name'] ?></b><br />
+		<i><?php echo $_SESSION['opauth']['email'] ?></i>
 	</div>
 	<div class="col-sm-12">
 		<a href="/logout" class="btn btn-link btn-sm input-lg form-control"><b>Log out</b></a>

@@ -48,6 +48,7 @@ $config = array(
 		'Google' => array(
 			'client_id' => '440134525270-nmnf3g5ld0ghcp78ht9vsp8msudgbov8.apps.googleusercontent.com',
 			'client_secret' => 'v_69MPQXEVxGCCV2ftmVkReX',
+			'redirect_uri' => 'http://'.$_SERVER['SERVER_NAME'].(($_SERVER['SERVER_PORT']!=80)?(':'.$_SERVER['SERVER_PORT']):'').'/google/login/',
 			'strategy_url_name' => 'Google',
 			'strategy_name' => 'Google',
 		)

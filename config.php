@@ -94,6 +94,30 @@
 				$app->render('/libs/GoogleLogin/logout.php');
 			})->name('ACCESS_GOOGLE_LOGIN');
 			
+			/**
+			 * API Endpoints
+			 */
+			$app->get('/api/save', function() use ($app) {
+				require_once $_SERVER['DOCUMENT_ROOT'].'/libs/DB.php';
+				$app->render('/api/save.php');
+			})->name('ACCESS_SAVE_DATA');
+			$app->get('/api/load', function() use ($app) {
+				require_once $_SERVER['DOCUMENT_ROOT'].'/libs/DB.php';
+				$app->render('/api/load.php');
+			})->name('ACCESS_LOAD_DATA');
+			$app->get('/api/get', function() use ($app) {
+				require_once $_SERVER['DOCUMENT_ROOT'].'/libs/DB.php';
+				$app->render('/api/get.php');
+			})->name('ACCESS_GET_DATA');
+			// these two below are for testing purposes and can accept entries through GET requests
+			$app->get('/api/save-get', function() use ($app) {
+				require_once $_SERVER['DOCUMENT_ROOT'].'/libs/DB.php';
+				$app->render('/api/save-get.php');
+			})->name('ACCESS_SAVE_DATA_TEST');
+			$app->get('/api/load-get', function() use ($app) {
+				require_once $_SERVER['DOCUMENT_ROOT'].'/libs/DB.php';
+				$app->render('/api/load-get.php');
+			})->name('ACCESS_LOAD_DATA_TEST');
 			return Config::SET_SLIM_ROUTES;
 		}
 		
