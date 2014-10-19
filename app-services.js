@@ -49,6 +49,9 @@ VisualIDE
 
 	this.costumes = [
 	'pikachu',
+	'pikaspec',
+	'pikasquirk',
+	'pikadead'
 	];
 	this.config = {
 		'id'		: 0,
@@ -59,7 +62,7 @@ VisualIDE
 	this.changeCostume = function($elem,$costumeId) {
 		console.log('characterService.changeCostume() called');
 		// change the templateUrl of the elem to the dataCostume[costumeId]
-		this.config.source = this.costumes[$costumeId];
+		this.config.source = $elem;
 	};
 	this.create = function($id,$name,$scale,$costumeId) {
 		console.log('characterService.create() called');
@@ -142,28 +145,6 @@ VisualIDE
 
 		this.config.left = currentX;
 		this.config.top = currentY;
-		//$rootScope.$apply();
-
-		
-		/*
-		while(xMoved != x || yMoved != y){
-
-			if(this.tick()){
-				xMoved = Number(xMoved) + Number(unitX);
-				yMoved = Number(yMoved) + Number(unitY);
-
-				currentX = Number(currentX) + Number(unitX);
-				currentY = Number(currentY) + Number(unitY);
-
-				this.config.left = currentX;
-				this.config.top = currentY;
-			}
-
-		}
-		*/
-
-		//console.log("left: " + this.config.left);
-		//console.log("top: " + this.config.top);
 
 		//if haven't reached destination
 		
