@@ -15,8 +15,8 @@ CREATE TABLE google_user (
 );
 
 CREATE TABLE saved_programs (
-	id					INT UNIQUE NOT NULL AUTO_INCREMENT,
-	google_user_id		VARCHAR(32) UNIQUE NOT NULL,
+	id					INT UNIQUE UNIQUE NOT NULL AUTO_INCREMENT,
+	google_user_id		VARCHAR(32) NOT NULL,
 	program_name		VARCHAR(64),
 	saved_data			TEXT,
 	lmodified			TIMESTAMP DEFAULT NOW(),
