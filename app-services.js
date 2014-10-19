@@ -29,7 +29,7 @@ VisualIDE
 	};
 	this.changeImage = function($backgroundId) {
 		console.log('backgroundService.changeImage() called');
-		this.config.source = this.backgrounds[$backgroundId];
+		this.config.source = $backgroundId;
 	};
 	this.changeScale = function($scale) {
 		console.log('backgroundService.changeScale() called');
@@ -49,6 +49,9 @@ VisualIDE
 
 	this.costumes = [
 	'pikachu',
+	'pikaspec',
+	'pikasquirk',
+	'pikadead'
 	];
 	this.config = {
 		'id'		: 0,
@@ -59,7 +62,7 @@ VisualIDE
 	this.changeCostume = function($elem,$costumeId) {
 		console.log('characterService.changeCostume() called');
 		// change the templateUrl of the elem to the dataCostume[costumeId]
-		this.config.source = this.costumes[$costumeId];
+		this.config.source = $elem;
 	};
 	this.create = function($id,$name,$scale,$costumeId) {
 		console.log('characterService.create() called');
@@ -142,28 +145,6 @@ VisualIDE
 
 		this.config.left = currentX;
 		this.config.top = currentY;
-		//$rootScope.$apply();
-
-		
-		/*
-		while(xMoved != x || yMoved != y){
-
-			if(this.tick()){
-				xMoved = Number(xMoved) + Number(unitX);
-				yMoved = Number(yMoved) + Number(unitY);
-
-				currentX = Number(currentX) + Number(unitX);
-				currentY = Number(currentY) + Number(unitY);
-
-				this.config.left = currentX;
-				this.config.top = currentY;
-			}
-
-		}
-		*/
-
-		//console.log("left: " + this.config.left);
-		//console.log("top: " + this.config.top);
 
 		//if haven't reached destination
 		
@@ -205,72 +186,35 @@ VisualIDE
 	/// this service contains the functions for the actions to call
 	console.log('commandProcessor initialized from app-services.js');
 	
+	var times = [];
+	var commandQueue = [];
 	var commandsInterval = 1000;
 	var defaultCommandsInterval = 1000;
 	var blockMainProcess = false;
+	var timeToRun = 0;
+	var cumulativeRepeatDelay = 0;
+	
+
+	this.play = function(commands){
+		console.log("making schedule");
+		var d = this.makeSchedule(commands,0);
+		console.log("running schedule");
+		this.runSchedule();
+	};
 
 	this.parseCommands = function(commands){
 		var currentExecutionIndex = 0;
 
-		/*
-		working
-		for(currentExecutionIndex = 0; currentExecutionIndex < commands.length; currentExecutionIndex++){
-			cmd = commands[currentExecutionIndex];
-			this.execute(cmd);
-		}
-		*/
-
-		/*
-		not working
-		currentExecutionIndex = -1;
-		var lastSuccess = true;
-		while(currentExecutionIndex < commands.length){
-
-			if(lastSuccess){
-				currentExecutionIndex++;
-				cmd = commands[currentExecutionIndex];
-				lastSuccess = this.execute(cmd);
-			}
-
-		}
-		*/
 		var that = this;
 		var iterations = commands.length;
-		/*
-		$interval(
-			function(){
-			that.dequeueNexecute(commands);
-			},
-			commandsInterval
-			,iterations
-			,true
-		  );
-		*/
+
 		$timeout(
 			function(){
-				//that.dequeueNexecute(commands);
 				that.executeNext(commands,0);
 			},
 			commandsInterval
 			);
 
-	};
-
-	this.dequeueNexecute = function(commands){
-		if(commands.length <= 0)
-			return;
-		console.log("dequeue and executing...");
-		cmdToRun = commands.shift();
-		this.execute(cmdToRun);
-		//commands.push(cmdToRun);
-		var that = this;
-		console.log("commandInterval: " + commandsInterval);
-		$timeout(
-			function(){
-				that.dequeueNexecute(commands);
-			},
-			commandsInterval
-			);
 	};
 
 	this.executeNext = function(commands, indexToRun){
@@ -283,54 +227,140 @@ VisualIDE
 		//commands.push(cmdToRun);
 		var that = this;
 		console.log("commandInterval: " + commandsInterval);
+
+
 		$timeout(
 			function(){
 				that.executeNext(commands,indexToRun);
 			},
 			commandsInterval
 			);
-	}
 
-
-	this.mainLoop = function(commands){
-		var currentExecutionIndex = 0;
-		
-		/*
-		while(currentExecutionIndex < commands.length){
-
-			cmd = commands[currentExecutionIndex];
-			this.execute(cmd);
-			++currentExecutionIndex;
-
-		}
-		*/
-
-
-	}
+	};
 
 
 	this.parseRepeat = function(commands, numberOfLoops){
-		loopExecutionIndex = 0;
+		var loopExecutionIndex = 0;
+
 		if(numberOfLoops < 0)
 			return;
-		while(true){
-			for(loopExecutionIndex = 0; loopExecutionIndex < commands.length; loopExecutionIndex++){
 
-				cmd = commands[loopExecutionIndex];
-				this.execute(cmd);
+		cmd = commands[loopExecutionIndex];
+		this.execute(cmd);
 
-			}
+		var that = this;
+		//"schedule" next command in loop
+		$timeout(
+		function(){
+			that.executeNext(commands,loopExecutionIndex);
+		},
+		commandsInterval
+		);
+		
 		numberOfLoops--;
-		//terminate repeat loop if no more repeats
 		if(numberOfLoops < 0)
-			break;
-		}
+			return;
+		//"schedule" next loop
+		$timeout(
+		function(){
+			that.parseRepeat(commands,numberOfLoops);
+		},
+		this.evaluateTimeNeededByRepeatBlock(commands,1)
+		);
+
+		//this.execute(commands,numberOfLoops);
+
 	};
+
+	this.makeSchedule = function(commands, startTime){
+		console.log("maaaakkiiiing");
+		timeToRun = startTime;
+		for(var i = 0; i < commands.length; i++){
+
+			command = commands[i];
+			console.log(command);
+			console.log("initial time: " + timeToRun);
+			//if move commands
+			if(command.title == "move"){
+				timeToRun += Math.abs(Number(1000*cmd.count/50)) + Number(defaultCommandsInterval);
+				console.log(timeToRun);
+				commandQueue.push(command);
+				times.push(timeToRun);
+				//console.log(commandQueue[commandQueue.length-1]);
+			}
+			//if not repeat commands
+			else if(command.title != "repeat"){
+				timeToRun += Number(defaultCommandsInterval);
+				console.log(timeToRun);
+				commandQueue.push(command);
+				times.push(timeToRun);
+				//console.log(commandQueue[commandQueue.length-1]);
+			}
+			//if repeat command
+			else if(command.title == "repeat"){
+				console.log(command.title)
+				var timePerLoop = this.evaluateTimeNeededByRepeatBlock(command.commands, 1);
+				var repeatedCommands = command.commands;
+				var numLoops = command.count;
+				console.log("numLoops: " + numLoops);
+				for(var i = 0; i < numLoops; i++){
+					//for the repeated commands
+					var temp = this.makeSchedule(repeatedCommands,timeToRun);
+					console.log("uno");
+					/*
+					for(var j = 0; j < repeatedCommands.length; j++){
+							
+					}
+					*/
+				}
+			}
+		}
+		return true;
+	}; 
+
+this.runSchedule = function(){
+	var that = this;
+	/*
+	var t = times;
+	var cq = commandQueue;
+	for(var i = 0; i < commandQueue.length; i++){
+		console.log(commandQueue[i]);
+		$timeout(
+			function(){
+				that.executeNoChain(commandQueue[i]);
+			},
+			times[i]
+			);
+	}
+	timeToRun = 0;
+	*/
+	this.dequeueFromSchedule();
+
+};
+
+this.dequeueFromSchedule = function(){
+	if(commandQueue.length <= 0){
+		timeToRun = 0;
+		return;
+	}
+	var cmdToRun = commandQueue.shift();
+	var time = times.shift();
+	console.log(time);
+	this.executeNoChain(cmdToRun);
+	var that = this;
+	$timeout(
+			function(){
+				that.dequeueFromSchedule();
+			},
+			time
+		);
+}
 	
-this.execute = function(cmd){
-	//var pixelsPerStep = 5;
+
+
+this.executeNoChain = function(cmd){
+	console.log(cmd);
 	var pass = true;
-	commandsInterval = defaultCommandsInterval;
 	switch(cmd.title){
 		case 'setX':
 			console.log("setX: " + cmd.x);
@@ -351,7 +381,46 @@ this.execute = function(cmd){
 		case 'move':
 			console.log("move:" + cmd.count);
 			pass = characterService.move(50,cmd.count,0,true);
-			commandsInterval = Number(1000*cmd.count/50) + Number(defaultCommandsInterval);
+			break;
+		case 'changeBackground': // background 1
+			pass = this.changeBackground(cmd.costume);
+			break;
+		case 'changeCostume': // costume 3
+			pass = this.changeCostume(cmd.costume);
+			break;
+		case 'repeat':
+			pass = this.parseRepeat(cmd.commands, cmd.count);
+			break;
+	}
+	return pass;
+};
+
+
+
+this.execute = function(cmd){
+	var pass = true;
+	commandsInterval = defaultCommandsInterval + cumulativeRepeatDelay;
+	switch(cmd.title){
+		case 'setX':
+			console.log("setX: " + cmd.x);
+			pass = characterService.setX(cmd.x);
+			break;
+		case 'setY':
+			console.log("setY: " + cmd.y);
+			pass = characterService.setY(cmd.y);
+			break;
+		case 'show':
+			console.log("show");
+			pass = characterService.show();
+			break;
+		case 'hide':
+			console.log("hide");
+			pass = characterService.hide();
+			break;
+		case 'move':
+			console.log("move:" + cmd.count);
+			pass = characterService.move(50,cmd.count,0,true);
+			commandsInterval = Math.abs(Number(1000*cmd.count/50)) + Number(defaultCommandsInterval) + cumulativeRepeatDelay;
 			break;
 		case 'changeBackground': // background 1
 			pass = this.changeBackground(cmd.costume);
@@ -361,12 +430,42 @@ this.execute = function(cmd){
 			return true;
 			break;
 		case 'repeat':
-			pass = parseRepeat(cmd.commands, cmd.count);
+			pass = this.parseRepeat(cmd.commands, cmd.count);
+			cumulativeRepeatDelay += this.evaluateTimeNeededByRepeatBlock(cmd.commands, 1) * cmd.count;
+			commandsInterval = cumulativeRepeatDelay;
 			break;
 	}
 	return pass;
 };
 
+//function to help evaluate the time needed for repeat blocks
+//problems that need to be addressed : nested repeat blocks
+this.evaluateTimeNeededByRepeatBlock = function(cmdBlock, numberOfLoops){
+	var timeNeeded = 0;
+	if(cmdBlock.length == 0){
+		return 0;
+	}
+	
+	//check the commands in the repeat block
+	for(var i = 0; i < cmdBlock.length; i++){
+		cmd = cmdBlock[i];
+		//if it's a repeat
+		if(this.isRepeat(cmd)){
+			timeNeeded += Number(this.evaluateTimeNeeded(cmd.commands));
+		}
+		
+		else if(cmd.title == "move"){
+			timeNeeded += Math.abs(Number(1000*cmd.count/50)) + Number(defaultCommandsInterval);
+		}
+		else{
+			timeNeeded += Number(defaultCommandsInterval);
+		}
+		
+		
+	}
+	
+	return timeNeeded * numberOfLoops;
+};
 
 this.getRepeatTimes = function(cmd){
 	if(isRepeat(cmd))
@@ -380,10 +479,13 @@ this.isRepeat = function(cmd){
 
 this.changeCostume = function($elem, $costumeId) {
 	console.log('changeCostume was called from service.commandProcessor');
+	console.log($elem);
+	console.log($costumeId);
 	characterService.changeCostume($elem, $costumeId);
 };
 this.changeBackground = function($backgroundId) {
 	console.log('changeBackground was called from service.commandProcessor');
+	console.log($backgroundId);
 	backgroundService.changeImage($backgroundId);
 };
 

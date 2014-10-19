@@ -27,6 +27,7 @@ VisualIDE
 		link: function(scope, elem, attr) {
 			console.log('characterInstance initialized from app-directives.js');
 			scope.current = characterService.config;
+			scope.availableCostumes = characterService.costumes;
 			console.log(scope.current);
 			scope.mouseClick = characterService.mouseClick;
 		}	
