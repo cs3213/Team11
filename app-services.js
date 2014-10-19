@@ -36,7 +36,7 @@ VisualIDE
 		this.config.scale = $scale;
 	};
 })
-.service('characterService', function($timeout, $rootScope) {
+.service('characterService', function($interval, $timeout, $rootScope) {
 	/// this service provides the character
 	console.log('characterService initialized from app-services.js');
 	var nextTickTime = 0;
@@ -107,10 +107,35 @@ VisualIDE
 		next();
 	};
 	//speed : pixels per second?
-	this.move = function(speed, x, y, newMovement, next){
+	this.move = function(speed, x, y, next){
 		console.log("characterService.move() called");
-		next();
+
+		// Currently only movement in x direction implemented!
+
+		var timeInterval = 20; // 20 milliseconds
+		var fps = 1000/timeInterval;
+
+		var pixelsPerFrame = speed/fps;
+		var numFrames = Math.round(Math.abs(x/pixelsPerFrame));
+
+		this.moveHelper(pixelsPerFrame, y, numFrames, timeInterval, next)
+
+		
 	};
+
+	this.moveHelper = function(x, y, framesRemaining, timeInterval, next) {
+		console.log("movehelper is called", x, y, framesRemaining, timeInterval, next);
+		this.setX (currentX += x, function(){});
+		framesRemaining--;
+		if (framesRemaining > 0) {
+			var that = this;
+			$timeout(function(){
+				that.moveHelper(x, y, framesRemaining, timeInterval, next);
+			}, timeInterval);
+		}else{
+			next();
+		}
+	}
 
 })
 .service('commandProcessor', ['$interval', '$timeout','backgroundService', 'characterService', function($interval, $timeout, backgroundService, characterService) {
@@ -118,29 +143,33 @@ VisualIDE
 	console.log('commandProcessor initialized from app-services.js');
 	
 	var commandsInterval = 1000;
-	var defaultCommandsInterval = 1000;
-	var blockMainProcess = false;
-
-
-	this.commands=[];
 
 	this.parseCommands = function(commands){
 		console.log(commands);
 
-		this.commands = commands;
-
-		var cmd = commands.shift();
-		this.parseCommandAndExecute(cmd, commands);
+		this.parseCommandAndExecute(commands.slice(0), function(){
+			console.log("animation complete!");
+		});
 		
 	};
 	
-	this.parseCommandAndExecute = function(cmd, remainingCommands){
+	this.parseCommandAndExecute = function(commands, afterCommandsFunction){
 		//var pixelsPerStep = 5;
 		var that = this;
+
+		console.log(commands);
+
+		if (commands.length == 0){
+			// No more commands!
+			// Run afterCommandsFunction
+			afterCommandsFunction();
+			return;
+		}
+
+		var cmd = commands.shift();
 		var nextCommandProcessor = function(){
-			var cmd = that.commands.shift();
 			$timeout(function(){
-				that.parseCommandAndExecute(cmd, that.commands);
+				that.parseCommandAndExecute(commands, afterCommandsFunction);
 			}, 1000);
 		}
 
@@ -177,7 +206,34 @@ VisualIDE
 					return true;
 					break;
 				case 'repeat':
-					pass = this.parseRepeat(cmd.commands, cmd.count, nextCommandProcessor);
+					//pass = this.parseRepeat(cmd.commands, cmd.count, nextCommandProcessor);
+					
+					/*
+					var that = this;
+
+					if (cmd.count > 0) {
+						this.parseCommandAndExecute(cmd.commands, function(){							
+							console.log(cmd.commands, cmd.count);
+							that.parseCommandAndExecute([{
+								title: 'repeat',
+								count: cmd.count-1,
+								commands: cmd.commands.slice(0) // we must clone the array
+							}]);
+						});
+					}*/
+					for (var i=0; i<cmd.count; i++){
+						commands = cmd.commands.concat(commands);
+					}
+					this.parseCommandAndExecute(commands, afterCommandsFunction);
+
+					/*
+					if (typeof extra !== 'undefined')
+
+					this.parseCommandAndExecute(cmd.commands, function(){
+						this.parseCommandAndExecute(cmd.commands
+						nextCommandProcessor();
+					});
+					*/
 					break;
 			}
 
@@ -195,6 +251,13 @@ VisualIDE
 		backgroundService.changeImage($backgroundId);
 		next();
 	};
+	
+	/*
+	this.parseRepeat = function(commands, count, next) {
+		var cmd = commands.shift();
+		this.parseCommandAndExecute(cmd, commands);
+	}
+	*/
 
 }])
 .service('pageService', function() {
