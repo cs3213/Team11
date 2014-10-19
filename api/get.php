@@ -27,6 +27,7 @@
 	namespace VisualIDE;
 	
 	// return values
+	define('USER_NOT_LOGGED_IN', -2);
 	define('NO_PROGRAMS_AT_ALL', -1);
 	
 	
@@ -34,7 +35,7 @@
 	 * 	Code
 	 */
 	if(!isset($_SESSION['opauth']['id'])) {
-		echo 'User needs to be logged in';
+		echo json_encode(USER_NOT_LOGGED_IN);
 		exit;
 	}
 	$results = DB::get()->saved_programs->select('program_name,lmodified')->where('google_user_id',$_SESSION['opauth']['id']);

@@ -1,5 +1,6 @@
 VisualIDE
-.controller('actionController', ['$rootScope','$scope', '$http', 'commandProcessor', function($rootScope,$scope, $http, commandProcessor) {
+.controller('actionController', ['$rootScope','$scope', '$http', 'commandProcessor','$modal',
+	function($rootScope,$scope, $http, commandProcessor,$modal) {
 	console.log('actionController initialized from app-controllers.js');
 	$scope.actions = [
 		'set x 24',
@@ -24,37 +25,66 @@ VisualIDE
 	};
 	$scope.save = function() {
 		//alert("todo!");
-		var progName = window.prompt("Name to save as", "My First Game");
-		$http({url:'/api/save', data:JSON.stringify({name: progName, content: JSON.stringify($rootScope.commandData)}),method:'POST'})
-		.success(function(data, status, headers, config) {
-		    // this callback will be called asynchronously
-		    // when the response is available
-		    var resultCode = JSON.parse(data);
-		    switch (resultCode) {
-		    	case 2:
-		    		alert("Save successful");
-		    		break;
-		    	case 1:
-		    		alert("Save updated");
-		    		break;
-		    	case -1:
-		    		alert("Save error. Please try again later");
-		    		break;
-		    	case -2:
-		    		alert("Save file already exists. Please try to save again with another name");
-		    		break;
-		    	default:
-		    		alert("Save failed. Please try again later");
-		    }
-		}).
-		error(function(data, status, headers, config) {
-		    // called asynchronously if an error occurs
-		    // or server returns response with an error status.
-		    alert("Save failed. Please try again later");
+		$http.get('/api/get').then(function(res){
+			if(res.data == -2) {
+				alert("You need to log in first before saving any data.");
+			} else {
+				var progName = window.prompt("Name to save as", "My First Game");
+				$http({url:'/api/save', data:JSON.stringify({name: progName, content: JSON.stringify($rootScope.commandData)}),method:'POST'})
+				.success(function(data, status, headers, config) {
+				    // this callback will be called asynchronously
+				    // when the response is available
+				    var resultCode = JSON.parse(data);
+				    switch (resultCode) {
+				    	case 2:
+				    		alert("Save successful");
+				    		break;
+				    	case 1:
+				    		alert("Save updated");
+				    		break;
+				    	case -1:
+				    		alert("Save error. Please try again later");
+				    		break;
+				    	case -2:
+				    		alert("Save file already exists. Please try to save again with another name");
+				    		break;
+				    	default:
+				    		alert("Save failed. Please try again later");
+				    }
+				}).
+				error(function(data, status, headers, config) {
+				    // called asynchronously if an error occurs
+				    // or server returns response with an error status.
+				    alert("Save failed. Please try again later");
+				});
+			}
 		});
-
 	};
 	$scope.commandsInclude = "templates/commands.htm";
+	$scope.items = [];
+
+	$scope.open = function (size) {
+		var modalInstance = $modal.open({
+			templateUrl: 'myModalContent.html',
+			controller: 'ModalInstanceCtrl',
+			size: size,
+			resolve: {
+				items: function () {
+					return $scope.items;
+				}
+			}
+		});
+
+		modalInstance.result.then(function (selectedItem) {
+			$scope.selected = selectedItem;
+			$http.post('/api/load', {name:selectedItem.program_name}).then(function(res){
+				console.log(res.data);
+				$rootScope.commandData = JSON.parse(res.data.saved_data);                
+			});
+		}, function () {
+			$log.info('Modal dismissed at: ' + new Date());
+		});
+	};
 }])
 .controller('authController', ['$scope', function($scope) {
 	console.log('pageController initialized from app-controllers.js');
@@ -291,7 +321,11 @@ VisualIDE
 
 	$scope.items = items;
 	$http.get('/api/get').then(function(res){
-		$scope.items = res.data;                
+		if(res.data == -2) {
+			$scope.items = undefined;
+		} else {
+			$scope.items = res.data;
+		}
 	});
 
 	$scope.selected = {

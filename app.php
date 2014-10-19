@@ -24,12 +24,13 @@
 				<form-login />
 			</div>
 			
-			<div ng-controller="ModalDemoCtrl" style="position:absolute;left:0px;top:0px;z-index:9999;">
+			
+			<div ng-controller="actionController" style="position:absolute;left:0px;top:0px;z-index:9999;">
 			    <script type="text/ng-template" id="myModalContent.html">
 			        <div class="modal-header">
 			            <h3 class="modal-title">Load Game</h3>
 			        </div>
-			        <div class="modal-body">
+			        <div class="modal-body" ng-show="items != undefined">
 			            <ul>
 			                <li ng-repeat="item in items">
 			                    <a ng-click="selected.item = item">{{ item.program_name }}</a>
@@ -37,15 +38,19 @@
 			            </ul>
 			            Selected: <b>{{ selected.item.program_name }}</b>
 			        </div>
+			        <div class="modal-body" ng-show="items === undefined">
+			        	Please login first.
+			        </div>
 			        <div class="modal-footer">
 			            <button class="btn btn-primary" ng-click="ok()">OK</button>
 			            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
 			        </div>
 			    </script>
 
-			    <button class="btn btn-default" ng-click="open()">Load Game</button>
+			    <!--<button class="btn btn-default" ng-click="open()">Load Game</button>-->
 			    <!--<div ng-show="selected">Selection from a modal: {{ selected }}</div>-->
 			</div>
+			
 		</div>
 		<div class="sidebar sidebar-right" toggleable parent-active-class="sidebar-right-in" id="rightSidebar"
 			ng-controller="menuSidebarRight">	
@@ -57,6 +62,9 @@
 								Drag n Drop Mode
 							</div>
 							<div class="btn-group pull-right">
+								<button class="btn btn-link" style="font-size:25px;padding:13px;" ng-click="open()">
+									<span class="fa fa-folder-open"></span>
+								</button>
 								<a class="btn btn-link" style="font-size:25px;padding:13px;" ng-click="save()">
 									<span class="fa fa-save"></span>
 								</a>
@@ -83,6 +91,7 @@
 							ng-bind="actions">
 						</textarea>
 					</div>
+					<!--
 					<div class="navbar navbar-app navbar-absolute-bottom" style="border-radius:0px;">
 						<div class="btn-group justified">
 							<a class="btn btn-navbar" ng-click="tab=!1">
@@ -93,6 +102,7 @@
 							</a>
 						</div>
 					</div>
+					-->
 				</div>
 			</div>
 		</div>
