@@ -118,6 +118,9 @@ VisualIDE
 		var pixelsPerFrame = speed/fps;
 		var numFrames = Math.round(Math.abs(x/pixelsPerFrame));
 
+		if (x < 0){
+			pixelsPerFrame = pixelsPerFrame*-1;
+		}
 		this.moveHelper(pixelsPerFrame, y, numFrames, timeInterval, next)
 
 		
