@@ -19,7 +19,8 @@ VisualIDE
 	$scope.play = function() {
 		//alert("todo!");
 		console.log("attempting to play");
-		commandProcessor.parseCommands($rootScope.commandData);
+		//commandProcessor.parseCommands($rootScope.commandData);
+		commandProcessor.play($rootScope.commandData);
 	};
 	$scope.save = function() {
 		alert("todo!");
