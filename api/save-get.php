@@ -36,7 +36,8 @@
 	/**
 	 * 	Code
 	 */
-	$data = json_decode(file_get_contents('php://input'));
+	$data = json_encode($_GET);
+	$data = json_decode($data);
 	if(!isset($_SESSION['opauth']['id'])) {
 		echo 'User needs to be logged in';
 		exit;
