@@ -201,12 +201,13 @@ VisualIDE
 	};
 
 })
-.service('commandProcessor', ['$interval','backgroundService', 'characterService', function($interval, backgroundService, characterService) {
+.service('commandProcessor', ['$interval', '$timeout','backgroundService', 'characterService', function($interval, $timeout, backgroundService, characterService) {
 	/// this service contains the functions for the actions to call
 	console.log('commandProcessor initialized from app-services.js');
 	
 	var commandsInterval = 1000;
-
+	var defaultCommandsInterval = 1000;
+	var blockMainProcess = false;
 
 	this.parseCommands = function(commands){
 		var currentExecutionIndex = 0;
@@ -235,6 +236,7 @@ VisualIDE
 		*/
 		var that = this;
 		var iterations = commands.length;
+		/*
 		$interval(
 			function(){
 			that.dequeueNexecute(commands);
@@ -243,7 +245,14 @@ VisualIDE
 			,iterations
 			,true
 		  );
-
+		*/
+		$timeout(
+			function(){
+				//that.dequeueNexecute(commands);
+				that.executeNext(commands,0);
+			},
+			commandsInterval
+			);
 
 	};
 
@@ -253,8 +262,34 @@ VisualIDE
 		console.log("dequeue and executing...");
 		cmdToRun = commands.shift();
 		this.execute(cmdToRun);
-		commands.push(cmdToRun);
+		//commands.push(cmdToRun);
+		var that = this;
+		console.log("commandInterval: " + commandsInterval);
+		$timeout(
+			function(){
+				that.dequeueNexecute(commands);
+			},
+			commandsInterval
+			);
 	};
+
+	this.executeNext = function(commands, indexToRun){
+		if(commands.length <= 0 || indexToRun < 0 || indexToRun >= commands.length)
+			return;
+		console.log("executing index " + indexToRun + "...");
+		cmdToRun = commands[indexToRun];
+		this.execute(cmdToRun);
+		++indexToRun;
+		//commands.push(cmdToRun);
+		var that = this;
+		console.log("commandInterval: " + commandsInterval);
+		$timeout(
+			function(){
+				that.executeNext(commands,indexToRun);
+			},
+			commandsInterval
+			);
+	}
 
 
 	this.mainLoop = function(commands){
@@ -295,6 +330,7 @@ VisualIDE
 this.execute = function(cmd){
 	//var pixelsPerStep = 5;
 	var pass = true;
+	commandsInterval = defaultCommandsInterval;
 	switch(cmd.title){
 		case 'setX':
 			console.log("setX: " + cmd.x);
@@ -315,6 +351,7 @@ this.execute = function(cmd){
 		case 'move':
 			console.log("move:" + cmd.count);
 			pass = characterService.move(50,cmd.count,0,true);
+			commandsInterval = Number(1000*cmd.count/50) + Number(defaultCommandsInterval);
 			break;
 		case 'changeBackground': // background 1
 			pass = this.changeBackground(cmd.costume);
