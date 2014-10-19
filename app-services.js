@@ -40,7 +40,7 @@ VisualIDE
 	/// this service provides the character
 	console.log('characterService initialized from app-services.js');
 	var nextTickTime = 0;
-	var timePerTick = 50;
+	var timePerTick = 25;
 	var xMoved = 0;
 	var yMoved = 0;
 	var currentX = 0;
@@ -188,8 +188,8 @@ VisualIDE
 	
 	var times = [];
 	var commandQueue = [];
-	var commandsInterval = 1000;
-	var defaultCommandsInterval = 1000;
+	var commandsInterval = 300;
+	var defaultCommandsInterval = 500;
 	var blockMainProcess = false;
 	var timeToRun = 0;
 	var cumulativeRepeatDelay = 0;
@@ -275,6 +275,7 @@ VisualIDE
 	this.makeSchedule = function(commands, startTime){
 		console.log("maaaakkiiiing");
 		timeToRun = startTime;
+
 		for(var i = 0; i < commands.length; i++){
 
 			command = commands[i];
@@ -282,7 +283,7 @@ VisualIDE
 			console.log("initial time: " + timeToRun);
 			//if move commands
 			if(command.title == "move"){
-				timeToRun += Math.abs(Number(1000*cmd.count/50)) + Number(defaultCommandsInterval);
+				timeToRun += Math.abs(Number(1000*command.count/50)) + Number(defaultCommandsInterval)/5;
 				console.log(timeToRun);
 				commandQueue.push(command);
 				times.push(timeToRun);
@@ -299,20 +300,21 @@ VisualIDE
 			//if repeat command
 			else if(command.title == "repeat"){
 				console.log(command.title)
-				var timePerLoop = this.evaluateTimeNeededByRepeatBlock(command.commands, 1);
+				//var timePerLoop = this.evaluateTimeNeededByRepeatBlock(command.commands, 1);
 				var repeatedCommands = command.commands;
 				var numLoops = command.count;
 				console.log("numLoops: " + numLoops);
-				for(var i = 0; i < numLoops; i++){
+				console.log("loop: " + repeatedCommands);
+
+				for(var b = 0; b < repeatedCommands.length;b++)
+					console.log(repeatedCommands[b]);
+
+				
+				for(var a = 0; a < numLoops; a++){
 					//for the repeated commands
-					var temp = this.makeSchedule(repeatedCommands,timeToRun);
-					console.log("uno");
-					/*
-					for(var j = 0; j < repeatedCommands.length; j++){
-							
-					}
-					*/
+					this.makeSchedule(repeatedCommands,timeToRun);
 				}
+				
 			}
 		}
 		return true;
