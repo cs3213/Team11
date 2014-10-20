@@ -74,7 +74,7 @@ VisualIDE
 		};
 	};
 
-	this.reposition = function ($xCoord, $yCoord){
+	this.reposition = function (xCoord, yCoord){
 		console.log("characterService.repositon() called");
 		this.config.left = xCoord;
 		this.config.top = yCoord;
@@ -283,7 +283,7 @@ VisualIDE
 			console.log("initial time: " + timeToRun);
 			//if move commands
 			if(command.title == "move"){
-				timeToRun += Math.abs(Number(1000*command.count/50)) + Number(defaultCommandsInterval)/5;
+				timeToRun += Math.abs(Number(1000*command.count/50));//; + Number(defaultCommandsInterval)/5;
 				console.log(timeToRun);
 				commandQueue.push(command);
 				times.push(timeToRun);
@@ -422,7 +422,7 @@ this.execute = function(cmd){
 		case 'move':
 			console.log("move:" + cmd.count);
 			pass = characterService.move(50,cmd.count,0,true);
-			commandsInterval = Math.abs(Number(1000*cmd.count/50)) + Number(defaultCommandsInterval) + cumulativeRepeatDelay;
+			commandsInterval = Math.abs(Number(1000*cmd.count/50));// + Number(defaultCommandsInterval) + cumulativeRepeatDelay;
 			break;
 		case 'changeBackground': // background 1
 			pass = this.changeBackground(cmd.costume);
