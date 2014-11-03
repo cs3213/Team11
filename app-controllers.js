@@ -251,8 +251,10 @@ VisualIDE
 				commandData[i] = {
 					//title: item.text(),
 					title: item.data("command"),
-					commands: $scope.processCommandElements(item.children(".command-inner-sortable"))
 				}
+				item.children(".command-inner-sortable").each( function(index, element) {
+					commandData[i][$(element).data("name")] = $scope.processCommandElements($(element));
+				});
 				var inputs = item.children();
 				for (var j=0; j<inputs.length; j++){
 					if ( $(inputs[j]).prop("tagName") == "INPUT" || $(inputs[j]).prop("tagName") == "SELECT" ) {

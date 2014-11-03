@@ -21,20 +21,20 @@
 				<option value="tree_bark">tree_bark</option>
 			</select></li>
 			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">repeat(<input type="text" size="2" name="count">)
-				<ul class="command-inner-sortable">  
+				<ul class="command-inner-sortable" data-name="commands">  
 				</ul>
 			</li>
-			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">forever
-				<ul class="command-inner-sortable">  
+			<li class="command-element sub-commands-allowed" data-command="forever" ui-jq="draggable" ui-options="commandDraggableParams">forever
+				<ul class="command-inner-sortable" data-name="commands">  
 				</ul>
 			</li>
-			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">if
+			<li class="command-element sub-commands-allowed" data-command="ifelse" ui-jq="draggable" ui-options="commandDraggableParams">if
 				<ul class="expr-droppable"></ul>
 				<br>
-				<ul class="command-inner-sortable">  
+				<ul class="command-inner-sortable" data-name="ifblock">  
 				</ul>
 				else
-				<ul class="command-inner-sortable">  
+				<ul class="command-inner-sortable" data-name="elseblock">  
 				</ul>
 			</li>
 		</ul>
