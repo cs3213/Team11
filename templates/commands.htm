@@ -1,5 +1,5 @@
 <div ng-controller="commandControl" class="noselect">
-	<div class="command-toolbox" id="toolbox" style="float:left;">
+	<div class="command-toolbox toolbox" id="toolbox" style="float:left;">
 		<p>Actions</p>
 		<ul>
 			<li class="command-element" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">setX(<input type="text" size="2" name="x">)</li>
@@ -29,8 +29,7 @@
 				</ul>
 			</li>
 			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">if
-				<ul class="expression-sortable">  
-				</ul>
+				<ul class="expr-droppable"></ul>
 				<br>
 				<ul class="command-inner-sortable">  
 				</ul>
@@ -40,28 +39,54 @@
 			</li>
 		</ul>
 	</div>
-	<div class="math-toolbox" id="toolbox" style="float:left;">
+	<div class="expr-toolbox toolbox" style="float:left;">
+		<p>Expressions</p>
+		<ul>
+			<li class="expr-element" ui-jq="draggable" data-command="and" ui-options="expressionDraggableParams">
+				<ul class="expr-droppable"></ul> and <ul class="expr-droppable"></ul>
+			</li>
+			<li class="expr-element" ui-jq="draggable" data-command="or" ui-options="expressionDraggableParams">
+				<ul class="expr-droppable"></ul> or <ul class="expr-droppable"></ul>
+			</li>
+		</ul>
+
+		<p>Comparison</p>
+		<ul>
+			<li class="cmp-element" ui-jq="draggable" data-command="lt" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> &lt; <ul class="math-droppable"></ul>
+			</li>
+			<li class="cmp-element" ui-jq="draggable" data-command="gt" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> &gt; <ul class="math-droppable"></ul>
+			</li>
+			<li class="cmp-element" ui-jq="draggable" data-command="eq" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> = <ul class="math-droppable"></ul>
+			</li>
+		</ul>
+
 		<p>Math</p>
 		<ul>
-			<li class="math-element" ui-jq="draggable" data-command="setX" ui-options="expressionDraggableParams" style="width:100px;">
-				<ul class="expression-sortable"></ul>+<ul class="expression-sortable"></ul>
+			<li class="math-element" ui-jq="draggable" data-command="add" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> + <ul class="math-droppable"></ul>
 			</li>
-			<li class="math-element" ui-jq="draggable" data-command="setY" ui-options="expressionDraggableParams">-</li>
-			<li class="math-element" ui-jq="draggable" data-command="show" ui-options="expressionDraggableParams">&times;</li>
-			<li class="math-element" ui-jq="draggable" data-command="hide" ui-options="expressionDraggableParams">&divide;</li>
-			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">%</li>
-			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">&lt;</li>
-			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">&gt;</li>
-			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">=</li>
+			<li class="math-element" ui-jq="draggable" data-command="subtract" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> - <ul class="math-droppable"></ul>
+			</li>
+			<li class="math-element" ui-jq="draggable" data-command="multiply" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> &times; <ul class="math-droppable"></ul>
+			</li>
+			<li class="math-element" ui-jq="draggable" data-command="divide" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> &divide; <ul class="math-droppable"></ul>
+			</li>
+			<li class="math-element" ui-jq="draggable" data-command="modulo" ui-options="expressionDraggableParams">
+				<ul class="math-droppable"></ul> mod <ul class="math-droppable"></ul>
+			</li>			
 		</ul>
-	</div>
-	<div class="variables-toolbox" id="toolbox" style="float:left;">
 		<p>Variables</p>
 		<ul>
-			<li class="variable-element" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">spriteX</li>
-			<li class="variable-element" ui-jq="draggable" data-command="setY" ui-options="commandDraggableParams">spriteY</li>
-			<li class="variable-element" ui-jq="draggable" data-command="show" ui-options="commandDraggableParams">mouseX</li>
-			<li class="variable-element" ui-jq="draggable" data-command="hide" ui-options="commandDraggableParams">mouseY</li>
+			<li class="var-element" ui-jq="draggable" data-command="setX" ui-options="expressionDraggableParams">spriteX</li>
+			<li class="var-element" ui-jq="draggable" data-command="setY" ui-options="expressionDraggableParams">spriteY</li>
+			<li class="var-element" ui-jq="draggable" data-command="show" ui-options="expressionDraggableParams">mouseX</li>
+			<li class="var-element" ui-jq="draggable" data-command="hide" ui-options="expressionDraggableParams">mouseY</li>
 		</ul>
 	</div>
 

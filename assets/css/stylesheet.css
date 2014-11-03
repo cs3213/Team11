@@ -1,6 +1,11 @@
-.command-toolbox ul {
+.toolbox ul {
 	margin:0px;
 	padding:0px;
+}
+
+.expr-toolbox {
+	padding-right:5px;
+	width:120px;
 }
 
 li.command-element {
@@ -15,23 +20,24 @@ li.command-element {
 	border-radius:5px;
 }
 
-li.math-element {
+li.expr-element, li.math-element, li.cmp-element, li.var-element {
 	list-style: none;
 	background-color: #FFF;
 	color:#000;
 	margin: 5px;
 	padding: 5px;
-	width: 20px;
+	min-width: 20px;
 	display:list-item;
 	border:1px solid #AAA;
 	border-radius:5px;
 }
 
-ul.expression-sortable {
-	border:1px solid #AAA;
+ul.expr-droppable, ul.math-droppable, ul.cmp-droppable, ul.var-droppable {
+	/*border:1px solid #AAA;*/
+	background-color:#AAA;
 	border-radius:5px;
 	display: inline-block;
-	width:20px;
+	min-width:20px;
 }
 
 li.command-element input {
@@ -63,7 +69,12 @@ li.command-element input {
 	padding:0px 0px 30px 0px;
 }
 
-.command-toolbox p, .command-workspace-outer p {
+.command-workspace .expr-element ul {
+	margin:0px;
+	padding:0px 0px 20px 0px;
+}
+
+.toolbox p, .command-workspace-outer p {
 	color:#FFF;
 	margin-left: 10px;
 	font-weight: bold;

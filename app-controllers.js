@@ -151,7 +151,8 @@ VisualIDE
 	$scope.expressionDraggableParams = {
         helper: "clone",
 		revert: "invalid",
-		connectToSortable: ".expression-sortable",
+		/*stack: ".command-element, .expr-element, .math-element, .cmp-element, .var-element"*/
+		zIndex: 1000,
 	};
 
 	$scope.workspaceSortableParams = {
@@ -183,15 +184,40 @@ VisualIDE
 		    }
 		});
 
-		$( "#workspace .expression-sortable" ).sortable({
-    		connectWith: ".expression-sortable, #trash",
-		    deactivate: function(event, ui){
-		    	$scope = angular.element(event.target).scope();
-		        // We run this to apply the sortable to all the newly created sortables (created when you drag out the repeat)
-		        $scope.initInnerSortables();
-		        $scope.updateCommandData($scope);
-		    }
+		$( "#workspace .expr-droppable" ).droppable({
+			accept: ".expr-element, .cmp-element",
+			greedy: true,
+			drop: function( event, ui ) {
+				var dropped = ui.draggable;
+				dropped = dropped.clone();
+				dropped.zIndex(0);
+        		var droppedOn = $(this);
+        		droppedOn.html("");
+        		droppedOn.append(dropped);
+        		$scope.initInnerSortables();
+        		//alert(dropped);
+        	},
 		});
+
+		$( "#workspace .math-droppable" ).droppable({
+			accept: ".math-element, .var-element",
+			greedy: true,
+			drop: function( event, ui ) {
+				var dropped = ui.draggable;
+				dropped = dropped.clone();
+				dropped.zIndex(0);
+        		var droppedOn = $(this);
+        		droppedOn.html("");
+        		droppedOn.append(dropped);
+        		$scope.initInnerSortables();
+        		//alert(dropped);
+        	},
+		});
+
+		$( ".expr-element, .cmp-element, .math-element, .var-element" ).draggable({
+			revert: "invalid",
+			connectToSortable: "#trash",
+		})
 
 		$scope.initInputElements();
 	}
