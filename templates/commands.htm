@@ -24,6 +24,44 @@
 				<ul class="command-inner-sortable">  
 				</ul>
 			</li>
+			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">forever
+				<ul class="command-inner-sortable">  
+				</ul>
+			</li>
+			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">if
+				<ul class="expression-sortable">  
+				</ul>
+				<br>
+				<ul class="command-inner-sortable">  
+				</ul>
+				else
+				<ul class="command-inner-sortable">  
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div class="math-toolbox" id="toolbox" style="float:left;">
+		<p>Math</p>
+		<ul>
+			<li class="math-element" ui-jq="draggable" data-command="setX" ui-options="expressionDraggableParams" style="width:100px;">
+				<ul class="expression-sortable"></ul>+<ul class="expression-sortable"></ul>
+			</li>
+			<li class="math-element" ui-jq="draggable" data-command="setY" ui-options="expressionDraggableParams">-</li>
+			<li class="math-element" ui-jq="draggable" data-command="show" ui-options="expressionDraggableParams">&times;</li>
+			<li class="math-element" ui-jq="draggable" data-command="hide" ui-options="expressionDraggableParams">&divide;</li>
+			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">%</li>
+			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">&lt;</li>
+			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">&gt;</li>
+			<li class="math-element" ui-jq="draggable" data-command="move" ui-options="expressionDraggableParams">=</li>
+		</ul>
+	</div>
+	<div class="variables-toolbox" id="toolbox" style="float:left;">
+		<p>Variables</p>
+		<ul>
+			<li class="variable-element" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">spriteX</li>
+			<li class="variable-element" ui-jq="draggable" data-command="setY" ui-options="commandDraggableParams">spriteY</li>
+			<li class="variable-element" ui-jq="draggable" data-command="show" ui-options="commandDraggableParams">mouseX</li>
+			<li class="variable-element" ui-jq="draggable" data-command="hide" ui-options="commandDraggableParams">mouseY</li>
 		</ul>
 	</div>
 

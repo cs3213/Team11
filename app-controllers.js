@@ -144,8 +144,14 @@ VisualIDE
 
 	$scope.commandDraggableParams = {
         helper: "clone",
-			revert: "invalid",
-			connectToSortable: "#workspace, .command-inner-sortable",
+		revert: "invalid",
+		connectToSortable: "#workspace, .command-inner-sortable",
+	};
+
+	$scope.expressionDraggableParams = {
+        helper: "clone",
+		revert: "invalid",
+		connectToSortable: ".expression-sortable",
 	};
 
 	$scope.workspaceSortableParams = {
@@ -177,9 +183,20 @@ VisualIDE
 		    }
 		});
 
+		$( "#workspace .expression-sortable" ).sortable({
+    		connectWith: ".expression-sortable, #trash",
+		    deactivate: function(event, ui){
+		    	$scope = angular.element(event.target).scope();
+		        // We run this to apply the sortable to all the newly created sortables (created when you drag out the repeat)
+		        $scope.initInnerSortables();
+		        $scope.updateCommandData($scope);
+		    }
+		});
+
 		$scope.initInputElements();
 	}
 
+	// Code below is for serialization/deserialization
 	$scope.updateCommandData = function($scope){
 		var workspaceItems = $( "#workspace" ).children();
 
