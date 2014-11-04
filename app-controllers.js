@@ -189,6 +189,7 @@ VisualIDE
 			greedy: true,
 			activeClass: "droppable-active",
 			hoverClass: "droppable-hover",
+			tolerance: "pointer",
 			drop: function( event, ui ) {
 				var dropped = ui.draggable;
 				dropped = dropped.clone();
@@ -209,6 +210,7 @@ VisualIDE
 			greedy: true,
 			activeClass: "droppable-active",
 			hoverClass: "droppable-hover",
+			tolerance: "pointer",
 			drop: function( event, ui ) {
 				var dropped = ui.draggable;
 				dropped = dropped.clone();
