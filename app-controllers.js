@@ -301,6 +301,12 @@ VisualIDE
 		}
 		var children = element.children();
 		for (var i=0; i<children.length; i++){
+			if ( $(children[i]).prop("tagName") == "INPUT" || $(children[i]).prop("tagName") == "SELECT" ) {
+				var name = $(children[i]).attr("name");
+				var value = $(children[i]).val();
+				returnVal[name] = value;
+			}
+
 			var expName = $(element).data('exp-name');
 			if ( typeof($(children[i]).data("exp-name")) !== "undefined"){
 				var expName = $(children[i]).data("exp-name");
@@ -321,7 +327,7 @@ VisualIDE
 		for (var i=0; i<commandData.length; i++){
 			var c = commandData[i];
 			console.log("c", c);
-			var toolboxItem = $("#toolbox").find("li[data-command|='"+c.title+"']");
+			var toolboxItem = $(".command-toolbox, .expr-toolbox").find("li[data-command|='"+c.title+"']");
 			var item = $(toolboxItem).clone();
 			var children = item.children();
 			for (var j=0; j<children.length; j++){
@@ -336,8 +342,12 @@ VisualIDE
 				}
 			}
 			if (item.hasClass("sub-commands-allowed")) {
-				item.find(".command-inner-sortable").html("");
-				$scope.populateCommandElements(commandData[i].commands, item.find(".command-inner-sortable"))
+
+				item.children(".command-inner-sortable").each( function(index, element) {
+					$(element).html("");
+					$scope.populateCommandElements(commandData[i][$(element).data("name")], $(element));
+				});				
+				
 			}
 			$(rootElement).append(item);
 		}

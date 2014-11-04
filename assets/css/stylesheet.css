@@ -49,7 +49,7 @@ ul.expr-droppable, ul.math-droppable, ul.cmp-droppable, ul.var-droppable {
 	padding:0px !important;
 }
 
-li.command-element input {
+li.command-element input, li.expr-element input, li.math-element input, li.cmp-element input, li.var-element input {
 	border:1px solid #DDD;
 	font-size:0.9em;
 	border-radius:10px;
