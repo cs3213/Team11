@@ -108,6 +108,14 @@ li.command-element input {
 	top:0px;
 }
 
+.droppable-active {
+	background-color: #5CD9EF !important;
+}
+
+.droppable-hover {
+	background-color: #7FE22A !important;
+}
+
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

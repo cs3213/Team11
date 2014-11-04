@@ -187,6 +187,8 @@ VisualIDE
 		$( "#workspace .expr-droppable" ).droppable({
 			accept: ".expr-element, .cmp-element",
 			greedy: true,
+			activeClass: "droppable-active",
+			hoverClass: "droppable-hover",
 			drop: function( event, ui ) {
 				var dropped = ui.draggable;
 				dropped = dropped.clone();
@@ -202,6 +204,8 @@ VisualIDE
 		$( "#workspace .math-droppable" ).droppable({
 			accept: ".math-element, .var-element",
 			greedy: true,
+			activeClass: "droppable-active",
+			hoverClass: "droppable-hover",
 			drop: function( event, ui ) {
 				var dropped = ui.draggable;
 				dropped = dropped.clone();
@@ -247,33 +251,26 @@ VisualIDE
 		var commandData = [];
 		for (var i=0; i < items.length; i++){
 			var item = $(items[i]);
-			if (item.hasClass("sub-commands-allowed")) {
-				commandData[i] = {
-					//title: item.text(),
-					title: item.data("command"),
-				}
-				item.children(".command-inner-sortable").each( function(index, element) {
-					commandData[i][$(element).data("name")] = $scope.processCommandElements($(element));
-				});
-				var inputs = item.children();
-				for (var j=0; j<inputs.length; j++){
-					if ( $(inputs[j]).prop("tagName") == "INPUT" || $(inputs[j]).prop("tagName") == "SELECT" ) {
-						var name = $(inputs[j]).attr("name");
-						var value = $(inputs[j]).val();
-						commandData[i][name] = value;
-					}
-				}
-			}else{
-				commandData[i] = {
-					//title: item.text()
-					title: item.data("command"),
-				}
-				var inputs = item.find("input, select");
-				for (var j=0; j<inputs.length; j++){
+
+			var inputs = item.children();
+			commandData[i] = {
+				//title: item.text(),
+				title: item.data("command"),
+			}
+			for (var j=0; j<inputs.length; j++){
+				if ( $(inputs[j]).prop("tagName") == "INPUT" || $(inputs[j]).prop("tagName") == "SELECT" ) {
 					var name = $(inputs[j]).attr("name");
 					var value = $(inputs[j]).val();
 					commandData[i][name] = value;
 				}
+			}
+
+			if (item.hasClass("sub-commands-allowed")) {
+				
+				item.children(".command-inner-sortable").each( function(index, element) {
+					commandData[i][$(element).data("name")] = $scope.processCommandElements($(element));
+				});
+				
 			}
 			
 		}
