@@ -193,9 +193,11 @@ VisualIDE
 				var dropped = ui.draggable;
 				dropped = dropped.clone();
 				dropped.zIndex(0);
+				//dropped.remove();
         		var droppedOn = $(this);
         		droppedOn.html("");
-        		droppedOn.append(dropped);
+        		//droppedOn.append(dropped);        		
+        		$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
         		$scope.initInnerSortables();
         		//alert(dropped);
         		$scope.updateCommandData($scope);
@@ -211,16 +213,18 @@ VisualIDE
 				var dropped = ui.draggable;
 				dropped = dropped.clone();
 				dropped.zIndex(0);
+				//dropped.remove();
         		var droppedOn = $(this);
         		droppedOn.html("");
-        		droppedOn.append(dropped);
+        		//droppedOn.append(dropped);        		
+        		$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
         		$scope.initInnerSortables();
         		//alert(dropped);
         		$scope.updateCommandData($scope);
         	},
 		});
 
-		$( ".expr-element, .cmp-element, .math-element, .var-element" ).draggable({
+		$( "#workspace .expr-element, .cmp-element, .math-element, .var-element" ).draggable({
 			revert: "invalid",
 			connectToSortable: "#trash",
 		})
@@ -309,6 +313,7 @@ VisualIDE
 	$scope.populateCommandElements = function(commandData, rootElement){
 		console.log(commandData, rootElement);
 
+		// In case users save with empty command blocks (e.g. empty repeat block)
 		if (typeof (commandData) === "undefined") {
 			return;
 		}
