@@ -292,6 +292,8 @@ VisualIDE
 
 		var returnVal = {
 			expTitle: element.data("command"),
+			eval: element.data("eval"),
+			evalExp: element.data("eval-exp"),
 		}
 		var children = element.children();
 		for (var i=0; i<children.length; i++){
@@ -389,6 +391,33 @@ VisualIDE
 			$scope.refresh();
 		}
 	});
+
+	$rootScope.parseExpression = function(expObj){
+
+		var funcCode = expObj.eval;
+		var funcParameters = [];
+		var expMappings = [];
+
+		if (typeof(expObj.evalExp) !== "undefined"){
+			var mappings = expObj.evalExp.split(",");
+			for (var i = 0; i < mappings.length; i++) {
+				var mapping = mappings[i].split("->");
+				var expName = mapping[0];
+				var paramName = mapping[1];
+
+				funcParameters.push(paramName);
+				expMappings.push($rootScope.parseExpression(expObj[expName]));
+			}
+		}else{
+			return expObj;
+		}
+		
+		var func = new (Function.prototype.bind.apply(Function, [null].concat(funcParameters, funcCode)));
+
+		// to evaluate
+		var result = func.apply(this, expMappings);
+		return result;
+	}
 
 })
 
