@@ -186,30 +186,8 @@ VisualIDE
 		    }
 		});
 
-		$( "#workspace .expr-droppable" ).droppable({
-			accept: ".expr-element, .cmp-element",
-			greedy: true,
-			activeClass: "droppable-active",
-			hoverClass: "droppable-hover",
-			tolerance: "pointer",
-			drop: function( event, ui ) {
-				var dropped = ui.draggable;
-				dropped = dropped.clone();
-				dropped.zIndex(0);
-				//dropped.remove();
-        		var droppedOn = $(this);
-        		droppedOn.html("");
-        		dropped.css({opacity: 1});  // hack to revert opacity which for some reason gets stuck
-        		//droppedOn.append(dropped);        		
-        		$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
-        		$scope.initInnerSortables();
-        		//alert(dropped);
-        		$scope.updateCommandData($scope);
-        	},
-		});
-
-		$( "#workspace .math-droppable" ).droppable({
-			accept: ".math-element, .var-element",
+		var droppableOptions = {
+			accept: "",
 			greedy: true,
 			activeClass: "droppable-active",
 			hoverClass: "droppable-hover",
@@ -227,17 +205,22 @@ VisualIDE
         		$scope.initInnerSortables();
         		//alert(dropped);
         		$scope.updateCommandData($scope);
-        	},
-		});
+
+        		ui.helper.remove(); // hack to remove helper which for some reason gets stuck
+        	}
+        };
+
+		$( "#workspace .expr-droppable" ).droppable(droppableOptions);
+		$( "#workspace .expr-droppable" ).droppable("option", "accept", ".expr-element, .cmp-element");
+
+		$( "#workspace .math-droppable" ).droppable(droppableOptions);
+		$( "#workspace .math-droppable" ).droppable("option", "accept", ".math-element, .var-element");
 
 		$("#workspace .expr-element, #workspace .math-element, #workspace .cmp-element, #workspace .var-element" ).draggable({
 			revert: "invalid",
 			zIndex: 1000,
 			connectToSortable: "#trash",
 			opacity: 0.7,
-			stop: function( event, ui ) {
-				ui.helper.remove(); // hack to remove helper, which for some reason remains stuck
-			},
 		});
 
 		$scope.initInputElements();
