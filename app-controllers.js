@@ -198,6 +198,7 @@ VisualIDE
         		droppedOn.append(dropped);
         		$scope.initInnerSortables();
         		//alert(dropped);
+        		$scope.updateCommandData($scope);
         	},
 		});
 
@@ -215,6 +216,7 @@ VisualIDE
         		droppedOn.append(dropped);
         		$scope.initInnerSortables();
         		//alert(dropped);
+        		$scope.updateCommandData($scope);
         	},
 		});
 
@@ -252,16 +254,20 @@ VisualIDE
 		for (var i=0; i < items.length; i++){
 			var item = $(items[i]);
 
-			var inputs = item.children();
+			var children = item.children();
 			commandData[i] = {
 				//title: item.text(),
 				title: item.data("command"),
 			}
-			for (var j=0; j<inputs.length; j++){
-				if ( $(inputs[j]).prop("tagName") == "INPUT" || $(inputs[j]).prop("tagName") == "SELECT" ) {
-					var name = $(inputs[j]).attr("name");
-					var value = $(inputs[j]).val();
+			for (var j=0; j<children.length; j++){
+				if ( $(children[j]).prop("tagName") == "INPUT" || $(children[j]).prop("tagName") == "SELECT" ) {
+					var name = $(children[j]).attr("name");
+					var value = $(children[j]).val();
 					commandData[i][name] = value;
+				}
+				if ( typeof($(children[j]).data("exp-name")) !== "undefined"){
+					var expName = $(children[j]).data("exp-name");
+					commandData[i][expName] = $scope.processExpressionElements($(children[j]));
 				}
 			}
 
@@ -275,6 +281,29 @@ VisualIDE
 			
 		}
 		return commandData;
+	}
+
+	$scope.processExpressionElements = function(element){
+
+		element = element.children(".expr-element, .cmp-element, .math-element, .var-element");
+		console.log(element);
+
+		if (typeof(element) === "undefined" || element.length == 0) {
+			return {};
+		}
+
+		var returnVal = {
+			title: element.data("command"),
+		}
+		var children = element.children();
+		for (var i=0; i<children.length; i++){
+			var expName = $(element).data('exp-name');
+			if ( typeof($(children[i]).data("exp-name")) !== "undefined"){
+				var expName = $(children[i]).data("exp-name");
+				returnVal[expName] = $scope.processExpressionElements($(children[i]));
+			}
+		}
+		return returnVal;
 	}
 
 	$scope.populateCommandElements = function(commandData, rootElement){

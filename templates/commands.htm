@@ -29,7 +29,7 @@
 				</ul>
 			</li>
 			<li class="command-element sub-commands-allowed" data-command="ifelse" ui-jq="draggable" ui-options="commandDraggableParams">if
-				<ul class="expr-droppable" data-name="condition"></ul>
+				<ul class="expr-droppable" data-exp-name="condition"></ul>
 				<br>
 				<ul class="command-inner-sortable" data-name="ifblock">  
 				</ul>
@@ -43,50 +43,50 @@
 		<p>Expressions</p>
 		<ul>
 			<li class="expr-element" ui-jq="draggable" data-command="and" ui-options="expressionDraggableParams">
-				<ul class="expr-droppable"></ul> and <ul class="expr-droppable"></ul>
+				<ul class="expr-droppable" data-exp-name="exp1"></ul> and <ul class="expr-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="expr-element" ui-jq="draggable" data-command="or" ui-options="expressionDraggableParams">
-				<ul class="expr-droppable"></ul> or <ul class="expr-droppable"></ul>
+				<ul class="expr-droppable" data-exp-name="exp1"></ul> or <ul class="expr-droppable" data-exp-name="exp2"></ul>
 			</li>
 		</ul>
 
 		<p>Comparison</p>
 		<ul>
 			<li class="cmp-element" ui-jq="draggable" data-command="lt" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> &lt; <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> &lt; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="cmp-element" ui-jq="draggable" data-command="gt" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> &gt; <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> &gt; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="cmp-element" ui-jq="draggable" data-command="eq" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> = <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> = <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 		</ul>
 
 		<p>Math</p>
 		<ul>
 			<li class="math-element" ui-jq="draggable" data-command="add" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> + <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> + <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="subtract" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> - <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> - <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="multiply" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> &times; <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> &times; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="divide" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> &divide; <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> &divide; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="modulo" ui-options="expressionDraggableParams">
-				<ul class="math-droppable"></ul> mod <ul class="math-droppable"></ul>
+				<ul class="math-droppable" data-exp-name="exp1"></ul> mod <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>			
 		</ul>
 		<p>Variables</p>
 		<ul>
 			<li class="var-element" ui-jq="draggable" data-command="setX" ui-options="expressionDraggableParams">spriteX</li>
 			<li class="var-element" ui-jq="draggable" data-command="setY" ui-options="expressionDraggableParams">spriteY</li>
-			<li class="var-element" ui-jq="draggable" data-command="show" ui-options="expressionDraggableParams">mouseX</li>
-			<li class="var-element" ui-jq="draggable" data-command="hide" ui-options="expressionDraggableParams">mouseY</li>
+			<li class="var-element" ui-jq="draggable" data-command="mouseX" ui-options="expressionDraggableParams">mouseX</li>
+			<li class="var-element" ui-jq="draggable" data-command="mouseY" ui-options="expressionDraggableParams">mouseY</li>
 		</ul>
 	</div>
 
