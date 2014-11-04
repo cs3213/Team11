@@ -130,7 +130,7 @@ VisualIDE
 .controller('sidepanelObjectives', function($scope) {
 	console.log('sidepanelObjectives initialized from app-controllers.js');
 })
-.controller('commandControl', function($scope, $element, $rootScope) {
+.controller('commandControl', function($scope, $element, $rootScope, $timeout) {
 	console.log("controller element", $element);
 
 	$scope.initInputElements = function(){
@@ -146,6 +146,7 @@ VisualIDE
         helper: "clone",
 		revert: "invalid",
 		connectToSortable: "#workspace, .command-inner-sortable",
+		opacity: 0.7,
 	};
 
 	$scope.expressionDraggableParams = {
@@ -153,6 +154,7 @@ VisualIDE
 		revert: "invalid",
 		/*stack: ".command-element, .expr-element, .math-element, .cmp-element, .var-element"*/
 		zIndex: 1000,
+		opacity: 0.7,
 	};
 
 	$scope.workspaceSortableParams = {
@@ -197,6 +199,7 @@ VisualIDE
 				//dropped.remove();
         		var droppedOn = $(this);
         		droppedOn.html("");
+        		dropped.css({opacity: 1});  // hack to revert opacity which for some reason gets stuck
         		//droppedOn.append(dropped);        		
         		$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
         		$scope.initInnerSortables();
@@ -218,7 +221,8 @@ VisualIDE
 				//dropped.remove();
         		var droppedOn = $(this);
         		droppedOn.html("");
-        		//droppedOn.append(dropped);        		
+        		//droppedOn.append(dropped);   
+        		dropped.css({opacity: 1});  // hack to revert opacity which for some reason gets stuck   		
         		$(dropped).detach().css({top: 0,left: 0}).appendTo(droppedOn);
         		$scope.initInnerSortables();
         		//alert(dropped);
@@ -226,10 +230,15 @@ VisualIDE
         	},
 		});
 
-		$( "#workspace .expr-element, .cmp-element, .math-element, .var-element" ).draggable({
+		$("#workspace .expr-element, #workspace .math-element, #workspace .cmp-element, #workspace .var-element" ).draggable({
 			revert: "invalid",
+			zIndex: 1000,
 			connectToSortable: "#trash",
-		})
+			opacity: 0.7,
+			stop: function( event, ui ) {
+				ui.helper.remove(); // hack to remove helper, which for some reason remains stuck
+			},
+		});
 
 		$scope.initInputElements();
 	}
