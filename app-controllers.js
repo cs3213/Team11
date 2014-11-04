@@ -293,7 +293,7 @@ VisualIDE
 		}
 
 		var returnVal = {
-			title: element.data("command"),
+			expTitle: element.data("command"),
 		}
 		var children = element.children();
 		for (var i=0; i<children.length; i++){
@@ -309,17 +309,25 @@ VisualIDE
 	$scope.populateCommandElements = function(commandData, rootElement){
 		console.log(commandData, rootElement);
 
+		if (typeof (commandData) === "undefined") {
+			return;
+		}
+
 		for (var i=0; i<commandData.length; i++){
 			var c = commandData[i];
 			console.log("c", c);
 			var toolboxItem = $("#toolbox").find("li[data-command|='"+c.title+"']");
 			var item = $(toolboxItem).clone();
-			var inputs = item.children();
-			for (var j=0; j<inputs.length; j++){
-				var inputElement = inputs[j];
+			var children = item.children();
+			for (var j=0; j<children.length; j++){
+				var inputElement = children[j];
 				if ( $(inputElement).prop("tagName") == "INPUT" || $(inputElement).prop("tagName") == "SELECT" ) {
 					var attributeName = $(inputElement).attr("name");
 					$(inputElement).val(commandData[i][attributeName]);
+				}
+				if ( typeof($(children[j]).data("exp-name")) !== "undefined"){
+					var expName = $(children[j]).data("exp-name");
+					$scope.populateExpressionElements(commandData[i][expName], $(children[j]));
 				}
 			}
 			if (item.hasClass("sub-commands-allowed")) {
@@ -328,6 +336,25 @@ VisualIDE
 			}
 			$(rootElement).append(item);
 		}
+	}
+
+	$scope.populateExpressionElements = function(commandData, rootElement){
+		var c = commandData;
+		var toolboxItem = $("#expr-toolbox").find("li[data-command|='"+c.expTitle+"']");
+		var item = $(toolboxItem).clone();
+		var children = item.children();
+		for (var j=0; j<children.length; j++){
+			var inputElement = children[j];
+			if ( $(inputElement).prop("tagName") == "INPUT" || $(inputElement).prop("tagName") == "SELECT" ) {
+				var attributeName = $(inputElement).attr("name");
+				$(inputElement).val(commandData[attributeName]);
+			}
+			if ( typeof($(children[j]).data("exp-name")) !== "undefined"){
+				var expName = $(children[j]).data("exp-name");
+				$scope.populateExpressionElements(commandData[expName], $(children[j]));
+			}
+		}
+		$(rootElement).append(item);
 	}
 
 	$scope.refresh = function(){
