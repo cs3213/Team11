@@ -196,12 +196,25 @@ VisualIDE
 	var speed = 100;
 	
 
+	var cmdBlockStack = new Array();
+	var cmdBlockIndexStack = new Array();
+
 	this.play = function(commands){
 		//console.log("making schedule");
-		var d = this.makeSchedule(commands,0);
+		//commandQueue = [];
+		//times = [];
+		//var d = this.makeSchedule(commands,0);
 		//console.log("running schedule");
-		this.runSchedule();
+		//this.runSchedule();
+
+		cmdBlockStack.push(commands);
+		executeNew(0, commands, commands[0]);
+
 	};
+
+
+
+
 
 	this.parseCommands = function(commands){
 		var currentExecutionIndex = 0;
@@ -346,6 +359,115 @@ this.runSchedule = function(){
 
 };
 
+this.executeNew = function(currentIndex, currentBlock, cmd){
+
+	if(isContainer(cmd)){
+
+		//check if there's statements after the container statement
+		//if there is, add the block and the index of the statement after to the stack
+		if(currentIndex + 1 <  currentBlock.length){
+			//push in the current block
+			cmdBlockStack.push(currentBlock);
+			cmdBlockIndexStack.push(currentIndex + 1);
+			executeContainer(cmd, currentIndex, currentBlock);
+		}
+	}
+	//if norma statement, e.g move, change bg etc
+	else{
+		that = this;
+		timeNeededToExecute = calculateStatementExecutionTime(cmd);
+		executeNoChain(cmd);
+		currentBlock++;
+		//check if there's a next stmt in the current block
+		if(currentBlock >= cmdBlockStack.length){
+			//pop out current block
+			cmdBlockStack.pop();
+
+			//check how many cmd blocks left
+			//if nothing left, return
+			if(cmdBlockStack.length <= 0){
+				return;
+			}
+			else{
+				//if still have, pop out and continue
+				currentBlock = cmdBlockStack.pop();
+				currentIndex = cmdBlockIndexStack.pop();
+				executeNew(currentIndex,currentBlock, currentBlock[currentIndex]);
+			}
+
+		}
+
+		$timeout(
+			function(){
+				that.executeNew(currentIndex,currentBlock,currentBlock[currentIndex]);
+			},
+			timeNeededToExecute
+		);
+
+
+	}
+
+}
+
+this.executeContainer = function(cmd, currentIndex, currentBlock){
+
+	if(cmd.title == "repeat"){
+		executeRepeat(cmd);
+	}
+	else if(cmd.title == "if"){
+		executeIf(cmd);
+	}
+
+
+}
+
+this.executeRepeat = function(cmd){
+	if(cmd.count <= 0)
+		return
+
+	else if(cmd.count == "inf"){
+		console.log("need to implement infinite looping");
+		return;
+	}
+	else{
+		cmd.count--;
+		//push in the repeat block (if it needs to be run again)
+		if(cmd.count > 1){
+			cmdBlockIndexStack.push(0);
+			temp = new Array();
+			temp.push(cmd);
+			cmdBlockStack.push(temp);
+		}
+		//execute the block once
+		executeNew(0,cmd.commands, cmd.commands[0]);
+	}
+}
+
+this.executeIf = function(cmd){
+	
+}
+
+//not for containers
+this.calculateStatementExecutionTime = function(command){
+	exeTime = 0;
+	if(command.title== "repeat" || command.title == "if"){
+		console.log("container statement received. Not valid.");
+		return;
+	}
+
+	//if move commands
+	if(command.title == "move"){
+		exeTime = Math.abs(Number(1000 * command.count/speed)) + Number(defaultCommandsInterval)*0.3;
+	}
+	//if not repeat commands and not move command
+	else {
+		exeTime = Number(defaultCommandsInterval);
+	}
+	return exeTime;
+}; 
+
+
+
 this.dequeueFromSchedule = function(){
 	if(commandQueue.length <= 0){
 		timeToRun = 0;
@@ -406,47 +528,6 @@ this.executeNoChain = function(cmd){
 
 
 
-this.execute = function(cmd){
-	var pass = true;
-	commandsInterval = defaultCommandsInterval + cumulativeRepeatDelay;
-	switch(cmd.title){
-		case 'setX':
-			//console.log("setX: " + cmd.x);
-			pass = characterService.setX(cmd.x);
-			break;
-		case 'setY':
-			//console.log("setY: " + cmd.y);
-			pass = characterService.setY(cmd.y);
-			break;
-		case 'show':
-			//console.log("show");
-			pass = characterService.show();
-			break;
-		case 'hide':
-			//console.log("hide");
-			pass = characterService.hide();
-			break;
-		case 'move':
-			//console.log("move:" + cmd.count);
-			pass = characterService.move(speed,cmd.count,0,true);
-			commandsInterval = Math.abs(Number(1000*cmd.count/50));// + Number(defaultCommandsInterval) + cumulativeRepeatDelay;
-			break;
-		case 'changeBackground': // background 1
-			pass = this.changeBackground(cmd.costume);
-			break;
-		case 'changeCostume': // costume 3
-			pass = this.changeCostume(cmd.costume);
-			return true;
-			break;
-		case 'repeat':
-			pass = this.parseRepeat(cmd.commands, cmd.count);
-			cumulativeRepeatDelay += this.evaluateTimeNeededByRepeatBlock(cmd.commands, 1) * cmd.count;
-			commandsInterval = cumulativeRepeatDelay;
-			break;
-	}
-	return pass;
-};
-
 //function to help evaluate the time needed for repeat blocks
 //problems that need to be addressed : nested repeat blocks
 this.evaluateTimeNeededByRepeatBlock = function(cmdBlock, numberOfLoops){
@@ -463,11 +544,8 @@ this.evaluateTimeNeededByRepeatBlock = function(cmdBlock, numberOfLoops){
 			timeNeeded += Number(this.evaluateTimeNeeded(cmd.commands));
 		}
 		
-		else if(cmd.title == "move"){
-			timeNeeded += Math.abs(Number(1000*cmd.count/speed)) + Number(defaultCommandsInterval);
-		}
-		else{
-			timeNeeded += Number(defaultCommandsInterval);
+		else if(cmd.title !== "if"){
+			timeNeeded += calculateStatementExecutionTime(cmd)
 		}
 		
 		
@@ -481,6 +559,12 @@ this.getRepeatTimes = function(cmd){
 		return cmd.count;
 	return 0;
 };
+
+this.isContainer = function(cmd){
+	if(cmd.title == "repeat" || cmd.title == "if")
+		return true;
+	return false;
+}
 
 this.isRepeat = function(cmd){
 	return (cmd.title == "repeat");
