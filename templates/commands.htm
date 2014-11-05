@@ -43,11 +43,11 @@
 		<p>Exp</p>
 		<ul>
 			<li class="expr-element" ui-jq="draggable" data-command="and" ui-options="expressionDraggableParams"
-			data-eval="return a && b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() && this.exp2.eval();">
 				<ul class="expr-droppable" data-exp-name="exp1"></ul> and <ul class="expr-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="expr-element" ui-jq="draggable" data-command="or" ui-options="expressionDraggableParams"
-			data-eval="return a || b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() || this.exp2.eval();">
 				<ul class="expr-droppable" data-exp-name="exp1"></ul> or <ul class="expr-droppable" data-exp-name="exp2"></ul>
 			</li>
 		</ul>
@@ -55,15 +55,15 @@
 		<p>Cmp</p>
 		<ul>
 			<li class="cmp-element" ui-jq="draggable" data-command="lt" ui-options="expressionDraggableParams"
-			data-eval="return a < b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() < this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> &lt; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="cmp-element" ui-jq="draggable" data-command="gt" ui-options="expressionDraggableParams"
-			data-eval="return a > b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() > this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> &gt; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="cmp-element" ui-jq="draggable" data-command="eq" ui-options="expressionDraggableParams"
-			data-eval="return a == b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() == this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> = <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 		</ul>
@@ -71,38 +71,39 @@
 		<p>Math</p>
 		<ul>
 			<li class="math-element" ui-jq="draggable" data-command="add" ui-options="expressionDraggableParams"
-			data-eval="return a + b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() + this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> + <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="subtract" ui-options="expressionDraggableParams"
-			data-eval="return a - b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() - this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> - <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="multiply" ui-options="expressionDraggableParams"
-			data-eval="return a * b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() * this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> &times; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="divide" ui-options="expressionDraggableParams"
-			data-eval="return a / b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() / this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> &divide; <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>
 			<li class="math-element" ui-jq="draggable" data-command="modulo" ui-options="expressionDraggableParams"
-			data-eval="return a % b;" data-eval-exp="exp1->a,exp2->b">
+			data-eval="return this.exp1.eval() % this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> mod <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>			
 		</ul>
 		<p>Vars</p>
 		<ul>
 			<li class="var-element" ui-jq="draggable" data-command="setX" ui-options="expressionDraggableParams"
-			data-eval="return 1;" data-eval-exp="">spriteX</li>
+			data-eval="return 1;">spriteX</li>
 			<li class="var-element" ui-jq="draggable" data-command="setY" ui-options="expressionDraggableParams"
-			data-eval="return 1;" data-eval-exp="">spriteY</li>
+			data-eval="return 1;">spriteY</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseX" ui-options="expressionDraggableParams"
-			data-eval="return 1;" data-eval-exp="">mouseX</li>
+			data-eval="return 1;">mouseX</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseY" ui-options="expressionDraggableParams"
-			data-eval="return 1;" data-eval-exp="">mouseY</li>
+			data-eval="return 1;">mouseY</li>
 			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
-			data-eval="return a;" data-eval-exp="value->a">number <input type="text" size="2" name="value"></li>
+			data-eval="return this.value * 1;">number <input type="text" size="2" name="value"></li>
+			<!-- we need the * 1 to handle the 1 + 2 = 3 and not 1 + 2 = 12 case! -->
 		</ul>
 	</div>
 

@@ -292,8 +292,7 @@ VisualIDE
 
 		var returnVal = {
 			expTitle: element.data("command"),
-			eval: element.data("eval"),
-			evalExp: element.data("eval-exp"),
+			eval: new Function("console.log(this);"+element.data("eval")),
 		}
 		var children = element.children();
 		for (var i=0; i<children.length; i++){
