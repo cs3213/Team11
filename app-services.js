@@ -107,10 +107,15 @@ VisualIDE
 		return true;
 	};
 	//speed : pixels per second?
-	this.move = function(speed, x, y, newMovement){
+	//convert to steps
+	this.move = function(speed, stepSize, x, y, newMovement){
 		////console.log("characterService.move function called");
 		////console.log("speed(pixels/s): " + speed);
 		////console.log("X to move: " + x);
+
+		if(x == 0 && y == 0)
+			return true;
+
 		if(newMovement){
 			xMoved = 0;
 			yMoved = 0;
@@ -133,6 +138,7 @@ VisualIDE
 				unitY *= -1;
 			}
 		}
+
 		////console.log("unitX movement: " + unitX);
 		////console.log("unitY movement: " + unitY);
 
@@ -148,7 +154,7 @@ VisualIDE
 
 		//if haven't reached destination
 		
-		if(xMoved != x || yMoved != y){
+		if(xMoved < x*stepSize || yMoved < y*stepSize){
 			
 			var nextExe = Number(timePerTick+delay);
 			////console.log("timegap: " + nextExe);
@@ -157,12 +163,12 @@ VisualIDE
 				
 				function(){
 					////console.log("recursing");
-					that.move(speed,x,y, false);
+					that.move(speed, stepSize,x,y, false);
 				}
 				
 				,nextExe);
 			}
-		else if(xMoved == x && yMoved == y){
+		else if(xMoved >= x*stepSize && yMoved >= y*stepSize){
 			return true;
 		}
 
@@ -194,7 +200,7 @@ VisualIDE
 	var timeToRun = 0;
 	var cumulativeRepeatDelay = 0;
 	var speed = 100;
-	
+	var stepSize = 50;
 	var playing = false;
 
 	var cmdBlockStack = new Array();
@@ -286,7 +292,7 @@ this.executeNew = function(currentIndex){
 
 	}
 
-}
+};
 
 this.executeContainer = function(cmd){
 	//console.log("executing container");
@@ -298,7 +304,7 @@ this.executeContainer = function(cmd){
 	}
 
 
-}
+};
 
 this.executeRepeat = function(cmd){
 	if(cmd.count <= 0)
@@ -321,7 +327,7 @@ this.executeRepeat = function(cmd){
 		cmdBlockStack.push(cmd.commands);
 		this.executeNew(0);
 	}
-}
+};
 
 this.executeIf = function(cmd){
 	console.log(cmd);
@@ -333,7 +339,7 @@ this.executeIf = function(cmd){
 		cmdBlockStack.push(cmd.elseblock);
 		this.executeNew(0);
 	}
-}
+};
 
 //not for containers
 this.calculateStatementExecutionTime = function(command){
@@ -345,7 +351,7 @@ this.calculateStatementExecutionTime = function(command){
 
 	//if move commands
 	if(command.title == "move"){
-		exeTime = Math.abs(Number(1000 * command.count/speed)) + Number(defaultCommandsInterval)*0.5;
+		exeTime = Math.abs(Number(1000 * stepSize * command.count/speed)) + Number(defaultCommandsInterval)*0.5;
 	}
 	//if not repeat commands and not move command
 	else {
@@ -353,8 +359,6 @@ this.calculateStatementExecutionTime = function(command){
 	}
 	return exeTime;
 }; 
-
-
 
 this.executeNoChain = function(cmd){
 	//console.log(cmd);
@@ -378,7 +382,7 @@ this.executeNoChain = function(cmd){
 			break;
 		case 'move':
 			//console.log("move:" + cmd.count);
-			characterService.move(speed,cmd.count,0,true);
+			characterService.move(speed,stepSize,cmd.count,0,true);
 			break;
 		case 'changeBackground': // background 1
 			this.changeBackground(cmd.costume);
