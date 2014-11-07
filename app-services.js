@@ -208,213 +208,79 @@ VisualIDE
 		//this.runSchedule();
 
 		cmdBlockStack.push(commands);
-		executeNew(0, commands, commands[0]);
+		//console.log(commands[0]);
+		this.executeNew(0, commands, commands[0]);
 
 	};
 
 
 
+this.executeNew = function(currentIndex){
+	currentBlock = cmdBlockStack[cmdBlockStack.length-1];
+	cmd =  currentBlock[currentIndex]
 
-
-	this.parseCommands = function(commands){
-		var currentExecutionIndex = 0;
-
-		var that = this;
-		var iterations = commands.length;
-
-		$timeout(
-			function(){
-				that.executeNext(commands,0);
-			},
-			commandsInterval
-			);
-
-	};
-
-	this.executeNext = function(commands, indexToRun){
-		if(commands.length <= 0 || indexToRun < 0 || indexToRun >= commands.length)
-			return;
-		//console.log("executing index " + indexToRun + "...");
-		cmdToRun = commands[indexToRun];
-		this.execute(cmdToRun);
-		++indexToRun;
-		//commands.push(cmdToRun);
-		var that = this;
-		//console.log("commandInterval: " + commandsInterval);
-
-
-		$timeout(
-			function(){
-				that.executeNext(commands,indexToRun);
-			},
-			commandsInterval
-			);
-
-	};
-
-
-	this.parseRepeat = function(commands, numberOfLoops){
-		var loopExecutionIndex = 0;
-
-		if(numberOfLoops < 0)
-			return;
-
-		cmd = commands[loopExecutionIndex];
-		this.execute(cmd);
-
-		var that = this;
-		//"schedule" next command in loop
-		$timeout(
-		function(){
-			that.executeNext(commands,loopExecutionIndex);
-		},
-		commandsInterval
-		);
-		
-		numberOfLoops--;
-		if(numberOfLoops < 0)
-			return;
-		//"schedule" next loop
-		$timeout(
-		function(){
-			that.parseRepeat(commands,numberOfLoops);
-		},
-		this.evaluateTimeNeededByRepeatBlock(commands,1)
-		);
-
-		//this.execute(commands,numberOfLoops);
-
-	};
-
-	this.makeSchedule = function(commands, startTime){
-		//console.log("maaaakkiiiing");
-		timeToRun = startTime;
-		var relativeTime = 0;
-		for(var i = 0; i < commands.length; i++){
-
-			command = commands[i];
-			//console.log(command);
-			//console.log("Time to execute command: " + timeToRun);
-			//if move commands
-			if(command.title == "move"){
-				////console.log(timeToRun);
-				commandQueue.push(command);
-				relativeTime = Math.abs(Number(1000 * 1.2 * command.count/speed)) + Number(defaultCommandsInterval);
-				times.push(relativeTime);
-				//times.push(timeToRun);
-				timeToRun += Math.abs(Number(1000 * 1.2 * command.count/speed)) + Number(defaultCommandsInterval)*0.3;
-				////console.log(commandQueue[commandQueue.length-1]);
-			}
-			//if not repeat commands
-			else if(command.title != "repeat"){
-				////console.log(timeToRun);
-				commandQueue.push(command);
-				relativeTime = Number(defaultCommandsInterval);
-				times.push(relativeTime);
-				//times.push(timeToRun);
-				timeToRun += Number(defaultCommandsInterval);
-				////console.log(commandQueue[commandQueue.length-1]);
-			}
-			//if repeat command
-			else if(command.title == "repeat"){
-				//console.log(command.title)
-				//var timePerLoop = this.evaluateTimeNeededByRepeatBlock(command.commands, 1);
-				var repeatedCommands = command.commands;
-				var numLoops = command.count;
-				//console.log("numLoops: " + numLoops);
-				//console.log("loop: " + repeatedCommands);
-
-				/*
-				for(var b = 0; b < repeatedCommands.length;b++)
-					//console.log(repeatedCommands[b]);
-				*/
-				
-				for(var a = 0; a < numLoops; a++){
-					//for the repeated commands
-					this.makeSchedule(repeatedCommands,timeToRun);
-				}
-				
-			}
-		}
-		return true;
-	}; 
-
-this.runSchedule = function(){
-	var that = this;
-	/*
-	var t = times;
-	var cq = commandQueue;
-	for(var i = 0; i < commandQueue.length; i++){
-		//console.log(commandQueue[i]);
-		$timeout(
-			function(){
-				that.executeNoChain(commandQueue[i]);
-			},
-			times[i]
-			);
-	}
-	timeToRun = 0;
-	*/
-	this.dequeueFromSchedule();
-
-};
-
-this.executeNew = function(currentIndex, currentBlock, cmd){
-
-	if(isContainer(cmd)){
-
+	if(this.isContainer(cmd)){
+		console.log("is Container");
 		//check if there's statements after the container statement
 		//if there is, add the block and the index of the statement after to the stack
 		if(currentIndex + 1 <  currentBlock.length){
-			//push in the current block
-			cmdBlockStack.push(currentBlock);
+
+			//the current block stack should already be inside the stack, so no need to push again
+			//just push the index to resume from
 			cmdBlockIndexStack.push(currentIndex + 1);
-			executeContainer(cmd, currentIndex, currentBlock);
+			this.executeContainer(cmd);
 		}
+		//otherwise (if it ends with the container statement) do nothing (i.e terminate)
 	}
-	//if norma statement, e.g move, change bg etc
+	//if normal statement, e.g move, change bg etc
 	else{
 		that = this;
-		timeNeededToExecute = calculateStatementExecutionTime(cmd);
-		executeNoChain(cmd);
-		currentBlock++;
+		//calculate the execution time of this statement
+		//execution time fo this statement = delay for next statement
+		timeNeededToExecute = this.calculateStatementExecutionTime(cmd);
+		//execute
+		this.executeNoChain(cmd);
+		//start planning for next statemment
+		currentIndex++;
 		//check if there's a next stmt in the current block
-		if(currentBlock >= cmdBlockStack.length){
-			//pop out current block
-			cmdBlockStack.pop();
-
-			//check how many cmd blocks left
-			//if nothing left, return
-			if(cmdBlockStack.length <= 0){
-				return;
-			}
-			else{
-				//if still have, pop out and continue
-				currentBlock = cmdBlockStack.pop();
-				currentIndex = cmdBlockIndexStack.pop();
-				executeNew(currentIndex,currentBlock, currentBlock[currentIndex]);
-			}
-
-		}
-
-		$timeout(
+		//if there is a next statement in the current block, shcedule it
+		if(currentIndex <= currentBlock.length){
+			$timeout(
 			function(){
-				that.executeNew(currentIndex,currentBlock,currentBlock[currentIndex]);
+				that.executeNew(currentIndex);
 			},
 			timeNeededToExecute
-		);
+			);
 
+		}
+		//else if there's no next statement in the current block
+		else{
+			//pop out the current block from the stack
+			cmdBlockStack.pop();
+			//check if there's another block in the blockStack
+			if(cmdBlockStack.length > 0){
+				//retrieve the resuming index
+				currentIndex = cmdBlockIndexStack.pop();
+				//schedule the resuming statement.
+				$timeout(
+				function(){
+					that.executeNew(currentIndex);
+				},
+				timeNeededToExecute
+				);
+			}
+		}
 
 	}
 
 }
 
-this.executeContainer = function(cmd, currentIndex, currentBlock){
-
+this.executeContainer = function(cmd){
+	console.log("executing container");
 	if(cmd.title == "repeat"){
 		executeRepeat(cmd);
 	}
-	else if(cmd.title == "if"){
+	else if(cmd.title == "ifelse"){
 		executeIf(cmd);
 	}
 
@@ -438,13 +304,22 @@ this.executeRepeat = function(cmd){
 			temp.push(cmd);
 			cmdBlockStack.push(temp);
 		}
-		//execute the block once
-		executeNew(0,cmd.commands, cmd.commands[0]);
+		//push in the block to run to change the context
+		cmdBlockStack.push(cmd.commands);
+		this.executeNew(0);
 	}
 }
 
 this.executeIf = function(cmd){
-	
+	console.log(cmd);
+	if(cmd.condition.eval()){
+		cmdBlockStack.push(cmd.ifblock);
+		this.executeNew(0);
+	}
+	else{
+		cmdBlockStack.push(cmd.elseblock);
+		this.executeNew(0);
+	}
 }
 
 //not for containers
@@ -466,27 +341,6 @@ this.calculateStatementExecutionTime = function(command){
 	return exeTime;
 }; 
 
-
-
-this.dequeueFromSchedule = function(){
-	if(commandQueue.length <= 0){
-		timeToRun = 0;
-		return;
-	}
-	var cmdToRun = commandQueue.shift();
-	var time = times.shift();
-	//console.log(time);
-	
-	var that = this;
-	$timeout(
-			function(){
-				that.executeNoChain(cmdToRun);
-				that.dequeueFromSchedule();
-			},
-			time
-		);
-}
-	
 
 
 this.executeNoChain = function(cmd){
@@ -527,41 +381,9 @@ this.executeNoChain = function(cmd){
 };
 
 
-
-//function to help evaluate the time needed for repeat blocks
-//problems that need to be addressed : nested repeat blocks
-this.evaluateTimeNeededByRepeatBlock = function(cmdBlock, numberOfLoops){
-	var timeNeeded = 0;
-	if(cmdBlock.length == 0){
-		return 0;
-	}
-	
-	//check the commands in the repeat block
-	for(var i = 0; i < cmdBlock.length; i++){
-		cmd = cmdBlock[i];
-		//if it's a repeat
-		if(this.isRepeat(cmd)){
-			timeNeeded += Number(this.evaluateTimeNeeded(cmd.commands));
-		}
-		
-		else if(cmd.title !== "if"){
-			timeNeeded += calculateStatementExecutionTime(cmd)
-		}
-		
-		
-	}
-	
-	return timeNeeded * numberOfLoops;
-};
-
-this.getRepeatTimes = function(cmd){
-	if(isRepeat(cmd))
-		return cmd.count;
-	return 0;
-};
-
 this.isContainer = function(cmd){
-	if(cmd.title == "repeat" || cmd.title == "if")
+	console.log(cmd);
+	if(cmd.title == "repeat" || cmd.title == "ifelse")
 		return true;
 	return false;
 }
