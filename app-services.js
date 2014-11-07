@@ -214,9 +214,11 @@ VisualIDE
 		//console.log("running schedule");
 		//this.runSchedule();
 
-		cmdBlockStack.push(commands);
+
 		//console.log(commands[0]);
 		if(!playing){
+			cmdBlockStack.push(commands);
+			console.log("cmdBlockStack: " + cmdBlockStack.length);
 			this.executeNew(0, commands, commands[0]);
 			playing = true;
 		}
@@ -233,21 +235,27 @@ this.reset = function(){
 }
 
 this.executeNew = function(currentIndex){
+	console.log("currentIndex: " + currentIndex);
 
 	if(currentIndex < 0 || cmdBlockStack.length <= 0){
 		console.log("finished tasks");
 		this.reset();
 		return;
 	}
+
 	currentBlock = cmdBlockStack[cmdBlockStack.length-1];
 	
 	//if there's no next statement in the current block
 	if(currentIndex >= currentBlock.length){
+		console.log("safety barrier activated");
+		console.log(cmdBlockStack);
+		console.log(cmdBlockStack.length);
 		//pop out the current block from the stack
 		cmdBlockStack.pop();
 		//check if there's another block in the blockStack
 		if(cmdBlockStack.length > 0){
 			//retrieve the resuming index
+			console.log("expected error here since indexstack not checked");
 			currentIndex = cmdBlockIndexStack.pop();
 			currentBlock = cmdBlockStack[cmdBlockStack.length-1];
 		}
@@ -268,6 +276,7 @@ this.executeNew = function(currentIndex){
 	//safety check
 	if(typeof cmd ==='undefined' || !cmd || cmd === 'null'){
 		console.log("cmd is undefined");
+		console.log("cmdBlockStack: " + cmdBlockStack.length);
 		//error correction
 		//if due to out of index
 		if(currentIndex >= currentBlock.length){
@@ -276,7 +285,7 @@ this.executeNew = function(currentIndex){
 			if(cmdBlockStack.length > 0 && cmdBlockIndexStack.length > 0){
 				currentIndex = cmdBlockIndexStack.pop();
 				cmdBlockStack.pop();
-
+				console.log("cmdBlockStack: " + cmdBlockStack.length);
 				currentBlock = cmdBlockStack[cmdBlockStack.length-1];
 				cmd =  currentBlock[currentIndex]
 
@@ -296,7 +305,9 @@ this.executeNew = function(currentIndex){
 		}
 		//jump to next command stack
 		else{
-
+			console.log("cmdBlockStack: " + cmdBlockStack.length);
+			console.log("cmdBlockIndexStack: " + cmdBlockIndexStack.length);
+			console.log("currentIndex: " + currentIndex);
 			if(cmdBlockStack.length > 0 && cmdBlockIndexStack.length > 0){
 				currentIndex = cmdBlockIndexStack.pop();
 				cmdBlockStack.pop();
@@ -366,6 +377,7 @@ this.executeNew = function(currentIndex){
 			
 			//pop out the current block from the stack
 			cmdBlockStack.pop();
+			console.log("cmdBlockStack: " + cmdBlockStack.length);
 			console.log(cmdBlockStack[cmdBlockStack.length-1]);
 			console.log(cmdBlockStack[cmdBlockStack.length-1][0]);
 			//check if there's another block in the blockStack
@@ -424,18 +436,22 @@ this.executeRepeat = function(cmd){
 		cmd.count--;
 		//push in the repeat block (if it needs to be run again)
 		if(cmd.count > 0){
-			cmdBlockIndexStack.push(0);
+			
 			temp = new Array();
 			temp.push(cmd);
 			cmdBlockStack.push(temp);
-			console.log("queueed next repeat iteration");
+			cmdBlockIndexStack.push(0);
+			console.log("queued next repeat iteration");
 		}
 
 		//push in the block to run to change the context
 		cmdBlockStack.push(cmd.commands);
+		console.log("cmdBlockStack: " + cmdBlockStack.length);
 		this.executeNew(0);
 		console.log("executing iteration");
 
+
+		
 	}
 };
 
