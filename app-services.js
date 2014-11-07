@@ -154,7 +154,7 @@ VisualIDE
 
 		//if haven't reached destination
 		
-		if(xMoved < x*stepSize || yMoved < y*stepSize){
+		if(xMoved != x*stepSize || yMoved != y*stepSize){
 			
 			var nextExe = Number(timePerTick+delay);
 			////console.log("timegap: " + nextExe);
@@ -168,7 +168,7 @@ VisualIDE
 				
 				,nextExe);
 			}
-		else if(xMoved >= x*stepSize && yMoved >= y*stepSize){
+		else if(xMoved == x*stepSize && yMoved == y*stepSize){
 			return true;
 		}
 
@@ -233,6 +233,7 @@ this.executeNew = function(currentIndex){
 
 	if(this.isContainer(cmd)){
 		//console.log("is Container");
+
 		//check if there's statements after the container statement
 		//if there is, add the block and the index of the statement after to the stack
 		if(currentIndex + 1 <  currentBlock.length){
@@ -242,7 +243,11 @@ this.executeNew = function(currentIndex){
 			cmdBlockIndexStack.push(currentIndex + 1);
 			this.executeContainer(cmd);
 		}
-		//otherwise (if it ends with the container statement) do nothing (i.e terminate)
+		//otherwise (if it ends with the container statement)
+		//execute
+		else{
+			this.executeContainer(cmd);
+		}
 	}
 	//if normal statement, e.g move, change bg etc
 	else{
@@ -295,12 +300,12 @@ this.executeNew = function(currentIndex){
 };
 
 this.executeContainer = function(cmd){
-	//console.log("executing container");
+	console.log("executing container");
 	if(cmd.title == "repeat"){
-		executeRepeat(cmd);
+		this.executeRepeat(cmd);
 	}
 	else if(cmd.title == "ifelse"){
-		executeIf(cmd);
+		this.executeIf(cmd);
 	}
 
 
@@ -315,6 +320,7 @@ this.executeRepeat = function(cmd){
 		return;
 	}
 	else{
+		console.log("executing repeat");
 		cmd.count--;
 		//push in the repeat block (if it needs to be run again)
 		if(cmd.count > 1){
@@ -322,20 +328,25 @@ this.executeRepeat = function(cmd){
 			temp = new Array();
 			temp.push(cmd);
 			cmdBlockStack.push(temp);
+			console.log("queueed next repeat iteration");
 		}
 		//push in the block to run to change the context
 		cmdBlockStack.push(cmd.commands);
 		this.executeNew(0);
+		console.log("executing iteration");
 	}
 };
 
 this.executeIf = function(cmd){
+
 	console.log(cmd);
 	if(cmd.condition.eval()){
+		console.log("executing if");
 		cmdBlockStack.push(cmd.ifblock);
 		this.executeNew(0);
 	}
 	else{
+		console.log("executing else");
 		cmdBlockStack.push(cmd.elseblock);
 		this.executeNew(0);
 	}
