@@ -223,13 +223,99 @@ VisualIDE
 
 	};
 
-
+this.reset = function(){
+	while(cmdBlockIndexStack.length>0)
+		cmdBlockIndexStack.pop();
+	while(cmdBlockStack.length > 0)
+		cmdBlockStack.pop();
+	playing = false;
+	console.log("reset-ed");
+}
 
 this.executeNew = function(currentIndex){
-	//console.log("executing");
+
+	if(currentIndex < 0 || cmdBlockStack.length <= 0){
+		console.log("finished tasks");
+		this.reset();
+		return;
+	}
 	currentBlock = cmdBlockStack[cmdBlockStack.length-1];
+	
+	//if there's no next statement in the current block
+	if(currentIndex >= currentBlock.length){
+		//pop out the current block from the stack
+		cmdBlockStack.pop();
+		//check if there's another block in the blockStack
+		if(cmdBlockStack.length > 0){
+			//retrieve the resuming index
+			currentIndex = cmdBlockIndexStack.pop();
+			currentBlock = cmdBlockStack[cmdBlockStack.length-1];
+		}
+		//means there's nothing left
+		else{
+			console.log("terminating");
+			this.reset();
+			return;
+		}
+	}
+	
+
+	//console.log("executing");
+
 	//console.log("current block size: " + currentBlock.length);
 	cmd =  currentBlock[currentIndex]
+
+	//safety check
+	if(typeof cmd ==='undefined' || !cmd || cmd === 'null'){
+		console.log("cmd is undefined");
+		//error correction
+		//if due to out of index
+		if(currentIndex >= currentBlock.length){
+			console.log("index out of bound");
+			//check command stack
+			if(cmdBlockStack.length > 0 && cmdBlockIndexStack.length > 0){
+				currentIndex = cmdBlockIndexStack.pop();
+				cmdBlockStack.pop();
+
+				currentBlock = cmdBlockStack[cmdBlockStack.length-1];
+				cmd =  currentBlock[currentIndex]
+
+				console.log("reassigned cmd: " + cmd);
+			}
+			else{
+				console.log("terminating");
+				this.reset();
+				return;
+			}
+		}
+		//else move to next index
+		else if(currentIndex+1 < currentBlock.length){
+			currentIndex++;
+			cmd =  currentBlock[currentIndex]	
+			console.log("reassigned cmd2: " + cmd);		
+		}
+		//jump to next command stack
+		else{
+
+			if(cmdBlockStack.length > 0 && cmdBlockIndexStack.length > 0){
+				currentIndex = cmdBlockIndexStack.pop();
+				cmdBlockStack.pop();
+
+				currentBlock = cmdBlockStack[cmdBlockStack.length-1];
+				cmd =  currentBlock[currentIndex]
+
+				console.log("reassigned cmd: " + cmd);
+			}
+			else{
+				console.log("terminating");
+				this.reset();
+				return;
+			}
+		}
+
+	}
+
+
 
 	if(this.isContainer(cmd)){
 		//console.log("is Container");
@@ -240,7 +326,8 @@ this.executeNew = function(currentIndex){
 
 			//the current block stack should already be inside the stack, so no need to push again
 			//just push the index to resume from
-			cmdBlockIndexStack.push(currentIndex + 1);
+			cmdBlockIndexStack.push(1*currentIndex + 1);
+			console.log("pushed resuming index: " + 1*currentIndex+1);
 			this.executeContainer(cmd);
 		}
 		//otherwise (if it ends with the container statement)
@@ -269,18 +356,26 @@ this.executeNew = function(currentIndex){
 			},
 			timeNeededToExecute
 			);
-			//console.log("scheduled next statement");
+			console.log("scheduled next statement");
 
 		}
+		
 		//else if there's no next statement in the current block
 		else{
+			console.log("shuupin! popping out used block. current block:");
+			
 			//pop out the current block from the stack
 			cmdBlockStack.pop();
+			console.log(cmdBlockStack[cmdBlockStack.length-1]);
+			console.log(cmdBlockStack[cmdBlockStack.length-1][0]);
 			//check if there's another block in the blockStack
-			if(cmdBlockStack.length > 0){
+			if(cmdBlockStack.length > 0 && cmdBlockIndexStack.length > 0){
 				//retrieve the resuming index
 				currentIndex = cmdBlockIndexStack.pop();
 				//schedule the resuming statement.
+				console.log("scheduling resuming statement");
+				console.log(cmdBlockStack[cmdBlockStack.length-1]);
+				console.log("index: " + currentIndex);
 				$timeout(
 				function(){
 					that.executeNew(currentIndex);
@@ -291,9 +386,12 @@ this.executeNew = function(currentIndex){
 			}
 			//means there's nothing left
 			else{
-				playing = false;
+				console.log("terminating");
+				this.reset();
+				return;
 			}
 		}
+		
 
 	}
 
@@ -321,19 +419,23 @@ this.executeRepeat = function(cmd){
 	}
 	else{
 		console.log("executing repeat");
+		console.log("iterations left: " + cmd.count);
+
 		cmd.count--;
 		//push in the repeat block (if it needs to be run again)
-		if(cmd.count > 1){
+		if(cmd.count > 0){
 			cmdBlockIndexStack.push(0);
 			temp = new Array();
 			temp.push(cmd);
 			cmdBlockStack.push(temp);
 			console.log("queueed next repeat iteration");
 		}
+
 		//push in the block to run to change the context
 		cmdBlockStack.push(cmd.commands);
 		this.executeNew(0);
 		console.log("executing iteration");
+
 	}
 };
 
