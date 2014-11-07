@@ -195,6 +195,7 @@ VisualIDE
 	var cumulativeRepeatDelay = 0;
 	var speed = 100;
 	
+	var playing = false;
 
 	var cmdBlockStack = new Array();
 	var cmdBlockIndexStack = new Array();
@@ -209,18 +210,23 @@ VisualIDE
 
 		cmdBlockStack.push(commands);
 		//console.log(commands[0]);
-		this.executeNew(0, commands, commands[0]);
+		if(!playing){
+			this.executeNew(0, commands, commands[0]);
+			playing = true;
+		}
 
 	};
 
 
 
 this.executeNew = function(currentIndex){
+	//console.log("executing");
 	currentBlock = cmdBlockStack[cmdBlockStack.length-1];
+	//console.log("current block size: " + currentBlock.length);
 	cmd =  currentBlock[currentIndex]
 
 	if(this.isContainer(cmd)){
-		console.log("is Container");
+		//console.log("is Container");
 		//check if there's statements after the container statement
 		//if there is, add the block and the index of the statement after to the stack
 		if(currentIndex + 1 <  currentBlock.length){
@@ -244,13 +250,15 @@ this.executeNew = function(currentIndex){
 		currentIndex++;
 		//check if there's a next stmt in the current block
 		//if there is a next statement in the current block, shcedule it
-		if(currentIndex <= currentBlock.length){
+		if(currentIndex < currentBlock.length){
+
 			$timeout(
 			function(){
 				that.executeNew(currentIndex);
 			},
 			timeNeededToExecute
 			);
+			//console.log("scheduled next statement");
 
 		}
 		//else if there's no next statement in the current block
@@ -268,6 +276,11 @@ this.executeNew = function(currentIndex){
 				},
 				timeNeededToExecute
 				);
+				//console.log("scheduled next block");
+			}
+			//means there's nothing left
+			else{
+				playing = false;
 			}
 		}
 
@@ -276,7 +289,7 @@ this.executeNew = function(currentIndex){
 }
 
 this.executeContainer = function(cmd){
-	console.log("executing container");
+	//console.log("executing container");
 	if(cmd.title == "repeat"){
 		executeRepeat(cmd);
 	}
@@ -332,7 +345,7 @@ this.calculateStatementExecutionTime = function(command){
 
 	//if move commands
 	if(command.title == "move"){
-		exeTime = Math.abs(Number(1000 * command.count/speed)) + Number(defaultCommandsInterval)*0.3;
+		exeTime = Math.abs(Number(1000 * command.count/speed)) + Number(defaultCommandsInterval)*0.5;
 	}
 	//if not repeat commands and not move command
 	else {
