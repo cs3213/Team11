@@ -248,9 +248,12 @@ VisualIDE
 
 		// Execute currentLine (flow control)
 		if (currentLine.title == "repeat") {
-			if (currentLine.count > 0) {
+			if ( typeof(currentLine.countVal) === "undefined" ) {
+				currentLine.countVal = currentLine.count.eval();
+			}			
+			if (currentLine.countVal > 0) {
 
-				currentLine.count--;
+				currentLine.countVal--;
 				stack.push({
 					lineNumber: lineNumber,
 					codeBlock: currentBlock,
@@ -261,6 +264,8 @@ VisualIDE
 				
 				$timeout(that.stepThrough, 1);
 				return;
+			}else{
+				timeForThisCommand = 1;
 			}
 
 		} else if (currentLine.title == "forever") {
@@ -306,12 +311,16 @@ VisualIDE
 					$timeout(that.stepThrough, 1);
 					return;
 				}
+			}else{
+				timeForThisCommand = 1;
 			}
-		}
+		}else {
 
-		// Execute currentLine (normal stuff)
-		timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
-		that.executeNoChain(currentLine);
+			// Execute currentLine (normal stuff)
+			timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
+			that.executeNoChain(currentLine);
+
+		}
 
 		// Advance to next line!
 		lineNumber++;
@@ -348,7 +357,7 @@ VisualIDE
 
 		//if move commands
 		if(command.title == "move"){
-			exeTime = Math.abs(Number(1000 * stepSize * command.count/speed)) + Number(defaultCommandsInterval)*0.5;
+			exeTime = Math.abs(Number(1000 * stepSize * command.count.eval()/speed)) + Number(defaultCommandsInterval)*0.5;
 		}
 		//if not repeat commands and not move command
 		else {
@@ -363,11 +372,11 @@ VisualIDE
 		switch(cmd.title){
 			case 'setX':
 				//console.log("setX: " + cmd.x);
-				characterService.setX(cmd.x);
+				characterService.setX(cmd.x.eval());
 				break;
 			case 'setY':
 				//console.log("setY: " + cmd.y);
-				characterService.setY(cmd.y);
+				characterService.setY(cmd.y.eval());
 				break;
 			case 'show':
 				//console.log("show");
@@ -379,7 +388,7 @@ VisualIDE
 				break;
 			case 'move':
 				//console.log("move:" + cmd.count);
-				characterService.move(speed,stepSize,cmd.count,0,true);
+				characterService.move(speed,stepSize,cmd.count.eval(),0,true);
 				break;
 			case 'changeBackground': // background 1
 				that.changeBackground(cmd.costume);
@@ -389,18 +398,6 @@ VisualIDE
 				break;
 		}
 		return pass;
-	};
-
-
-	this.isContainer = function(cmd){
-		console.log(cmd);
-		if(cmd.title == "repeat" || cmd.title == "ifelse")
-			return true;
-		return false;
-	}
-
-	this.isRepeat = function(cmd){
-		return (cmd.title == "repeat");
 	};
 
 	this.changeCostume = function($elem, $costumeId) {
