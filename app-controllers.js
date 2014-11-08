@@ -21,6 +21,11 @@ VisualIDE
 		//alert("todo!");
 		console.log("attempting to play");
 		//commandProcessor.parseCommands($rootScope.commandData);
+
+		// We MUST deep copy/clone the command data, otherwise the play command
+		// actually attempts to modify the data!
+		//var clonedCommandData = $.extend(true, [], $rootScope.commandData);
+
 		commandProcessor.play($rootScope.commandData);
 	};
 	$scope.save = function() {
