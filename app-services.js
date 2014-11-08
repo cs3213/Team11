@@ -188,7 +188,7 @@ VisualIDE
 	};
 
 })
-.service('commandProcessor', ['$interval', '$timeout','backgroundService', 'characterService', function($interval, $timeout, backgroundService, characterService) {
+.service('commandProcessor', ['$interval', '$timeout','backgroundService', 'characterService', '$rootScope', function($interval, $timeout, backgroundService, characterService, $rootScope) {
 	/// this service contains the functions for the actions to call
 	//console.log('commandProcessor initialized from app-services.js');
 	
@@ -219,6 +219,14 @@ VisualIDE
 		//console.log(commands[0]);
 		if(!playing){
 
+			// Start collecting mouse data
+			$( "body" ).mousemove(function( event ) {
+				//console.log(event.pageX, event.pageY);
+				window.mouseX = event.pageX - $("#playbackArea").parent().offset().left * 1;
+				window.mouseY = event.pageY;
+			});
+
+
 			// Initialize variables
 			stack = [];
 			lineNumber = 0;
@@ -231,6 +239,15 @@ VisualIDE
 		}
 
 	};
+
+
+	this.reset = function(){
+		// Stop collecting mouse data
+		$( "body" ).off("mousemove");
+
+		playing = false;
+		console.log("reset-ed");
+	}
 
 	var that = this;
 	this.stepThrough = function(){
@@ -330,7 +347,7 @@ VisualIDE
 			var stackFrame = stack.pop();
 			if ( typeof(stackFrame) === "undefined" ) {
 				console.log("execution complete");
-				playing = false;
+				that.reset();
 				return;
 			}else{
 				lineNumber = stackFrame.lineNumber;
@@ -340,11 +357,6 @@ VisualIDE
 
 		$timeout(that.stepThrough, timeForThisCommand);
 
-	}
-
-	this.reset = function(){
-		playing = false;
-		console.log("reset-ed");
 	}
 
 	//not for containers

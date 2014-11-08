@@ -12,7 +12,7 @@
 	width:100%;
 	z-index:0;
 ">
-	<div class="container-fluid" ng-show="current.console">
+	<div class="container-fluid" ng-show="current.console" id="playbackArea">
 		<div class="col-sm-4">
 			<div class="panel panel-default">
 				<div class="panel-heading text-center">
