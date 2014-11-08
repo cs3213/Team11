@@ -222,7 +222,7 @@ VisualIDE
 			// Start collecting mouse data
 			$( "body" ).mousemove(function( event ) {
 				//console.log(event.pageX, event.pageY);
-				window.mouseX = event.pageX - $("#playbackArea").parent().offset().left * 1;
+				window.mouseX = event.pageX;
 				window.mouseY = event.pageY;
 			});
 
@@ -384,7 +384,9 @@ VisualIDE
 		switch(cmd.title){
 			case 'setX':
 				//console.log("setX: " + cmd.x);
-				characterService.setX(cmd.x.eval());
+				var x = cmd.x.eval();
+				console.log(x);
+				characterService.setX(x);
 				break;
 			case 'setY':
 				//console.log("setY: " + cmd.y);

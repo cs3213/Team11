@@ -102,11 +102,11 @@
 		<p>Vars</p>
 		<ul>
 			<li class="var-element" ui-jq="draggable" data-command="spriteX" ui-options="expressionDraggableParams"
-			data-eval="return 1;">spriteX</li>
+			data-eval="return $('#0').offset().left - $('#playbackArea').parent().offset().left * 1;">spriteX</li>
 			<li class="var-element" ui-jq="draggable" data-command="spriteY" ui-options="expressionDraggableParams"
-			data-eval="return 1;">spriteY</li>
+			data-eval="return $('#0').offset().top;">spriteY</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseX" ui-options="expressionDraggableParams"
-			data-eval="return window.mouseX;">mouseX</li>
+			data-eval="return window.mouseX - $('#playbackArea').parent().offset().left * 1;">mouseX</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseY" ui-options="expressionDraggableParams"
 			data-eval="return window.mouseY;">mouseY</li>
 			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
