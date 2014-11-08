@@ -217,10 +217,13 @@ VisualIDE
 
 		//console.log(commands[0]);
 		if(!playing){
-			cmdBlockStack[cmdBlockStack.length] = commands;
+
+			cmdBlockStack.push(commands);
 			console.log("cmdBlockStack: " + cmdBlockStack.length);
 			this.executeNew(0, commands, commands[0]);
 			playing = true;
+		}else{
+			this.reset();
 		}
 
 	};
@@ -422,6 +425,7 @@ VisualIDE
 	};
 
 	this.executeRepeat = function(cmd){
+
 		if(cmd.count <= 0)
 			return
 
@@ -439,13 +443,13 @@ VisualIDE
 				
 				temp = new Array();
 				temp.push(cmd);
-				cmdBlockStack[cmdBlockStack.length] = temp;
+				cmdBlockStack.push(temp);
 				cmdBlockIndexStack.push(0);
 				console.log("queued next repeat iteration");
 			}
 
 			//push in the block to run to change the context
-			cmdBlockStack[cmdBlockStack.length] = cmd.commands;
+			cmdBlockStack.push(cmd.commands);
 			console.log("cmdBlockStack: " + cmdBlockStack.length);
 			this.executeNew(0);
 			console.log("executing iteration");
@@ -460,12 +464,12 @@ VisualIDE
 		console.log(cmd);
 		if(cmd.condition.eval()){
 			console.log("executing if");
-			cmdBlockStack[cmdBlockStack.length] = cmd.ifblock;
+			cmdBlockStack.push(cmd.ifblock);
 			this.executeNew(0);
 		}
 		else{
 			console.log("executing else");
-			cmdBlockStack[cmdBlockStack.length] = cmd.elseblock;
+			cmdBlockStack.push(cmd.elseblock);
 			this.executeNew(0);
 		}
 	};
