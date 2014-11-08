@@ -321,6 +321,7 @@ VisualIDE
 			var stackFrame = stack.pop();
 			if ( typeof(stackFrame) === "undefined" ) {
 				console.log("execution complete");
+				playing = false;
 				return;
 			}else{
 				lineNumber = stackFrame.lineNumber;
