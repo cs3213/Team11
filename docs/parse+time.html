@@ -1,0 +1,51 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+
+function deepClone(command){
+	return $.extend(true, [], command);
+}
+
+var commandData = JSON.parse('[{"title":"repeat","count":"2","commands":[{"title":"repeat","count":"3","commands":[{"title":"hide"},{"title":"show"}]},{"title":"move","count":"2"},{"title":"changeCostume","costume":"pikachu"}]},{"title":"setX","x":"4"},{"title":"setY","y":"3"}]');
+
+var stack = [];
+
+var lineNumber = 0;
+var currentBlock = deepClone(commandData);
+for (i=0; i<1000; i++){
+
+	var currentLine = currentBlock[lineNumber];
+	console.log(currentLine);
+
+	// Execute currentLine
+	if (currentLine.title == "repeat") {
+		if (currentLine.count > 0) {
+
+			currentLine.count--;
+			stack.push({
+				lineNumber: lineNumber,
+				codeBlock: currentBlock,
+			});
+
+			lineNumber = 0;
+			currentBlock = deepClone(currentLine.commands);
+			continue;
+		}
+	}
+
+	lineNumber++;
+
+	// pop out if end of command block
+	if (lineNumber >= currentBlock.length) {
+		var stackFrame = stack.pop();
+		if ( typeof(stackFrame) === "undefined" ) {
+			console.log("execution complete");
+			break;
+		}else{
+			lineNumber = stackFrame.lineNumber;
+			currentBlock = stackFrame.codeBlock;
+		}
+	}
+
+}
+
+</script>
