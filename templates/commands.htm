@@ -32,12 +32,18 @@
 				<ul class="command-inner-sortable" data-name="commands">  
 				</ul>
 			</li>
+			<li class="command-element sub-commands-allowed" data-command="while" ui-jq="draggable" ui-options="commandDraggableParams">while(
+				<ul class="expr-droppable" data-exp-name="condition"></ul> 
+			)
+				<ul class="command-inner-sortable" data-name="commands">  
+				</ul>
+			</li>
 			<li class="command-element sub-commands-allowed" data-command="forever" ui-jq="draggable" ui-options="commandDraggableParams">forever
 				<ul class="command-inner-sortable" data-name="commands">  
 				</ul>
 			</li>
 			<li class="command-element sub-commands-allowed" data-command="ifelse" ui-jq="draggable" ui-options="commandDraggableParams">if
-				<ul class="expr-droppable" data-exp-name="condition"></ul>
+				(<ul class="expr-droppable" data-exp-name="condition"></ul>)
 				<br>
 				<ul class="command-inner-sortable" data-name="ifblock">  
 				</ul>

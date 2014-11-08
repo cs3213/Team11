@@ -285,6 +285,23 @@ VisualIDE
 				timeForThisCommand = 1;
 			}
 
+		} else if (currentLine.title == "while") {	
+			if (currentLine.condition.eval() == true) {
+
+				stack.push({
+					lineNumber: lineNumber,
+					codeBlock: currentBlock,
+				});
+
+				lineNumber = 0;
+				currentBlock = that.deepClone(currentLine.commands);
+				
+				$timeout(that.stepThrough, 1);
+				return;
+			}else{
+				timeForThisCommand = 1;
+			}
+
 		} else if (currentLine.title == "forever") {
 			
 			stack.push({
