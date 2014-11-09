@@ -103,7 +103,7 @@ VisualIDE
 }])
 .controller('characterController', ['$scope', 'characterService', function($scope, characterService) {
 
-	$scope.characters = characterService.config;
+	$scope.characterService = characterService;
 
 	console.log('characterController initialized from app-controllers.js');
 	$scope.click = function() {

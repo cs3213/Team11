@@ -128,7 +128,7 @@
 				<!-- only one background --> 
 			</background-instance>
 			<div ng-controller="characterController">
-				<character-instance ng-repeat="current in characters"></character-instance>
+				<character-instance ng-repeat="current in characterService.config"></character-instance>
 			</div>
 			
 			<!-- /drawing board -->

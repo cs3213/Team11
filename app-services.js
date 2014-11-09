@@ -59,7 +59,7 @@ VisualIDE
 		'scale'		: 50,
 		'source'	: this.costumes[0],
 	};
-	this.config = [JSON.parse(JSON.stringify(this.defaultCharacter))];
+	this.config = [angular.copy(this.defaultCharacter)];
 	this.changeCostume = function(id,$elem, $costumeId) {
 		//console.log('characterService.changeCostume() called');
 		// change the templateUrl of the elem to the dataCostume[costumeId]
@@ -250,6 +250,10 @@ VisualIDE
 
 		playing = false;
 		console.log("reset-ed");
+
+		while(characterService.config.length > 0) {
+			characterService.config.pop();
+		}
 	}
 
 	var that = this;
@@ -361,32 +365,34 @@ VisualIDE
 			window.userVariables[currentLine.varName] = currentLine.varExp.eval();
 			timeForThisCommand = 1;
 
-		} else if  (currentLine.title == "setNumCharacters") {
+		} /*else if  (currentLine.title == "setNumCharacters") {
+
+			// No need for this now, code below auto-generates new character as required
 
 			var count = currentLine.count.eval();
-			characterService.config = new Array();
+			var characters = new Array();
 			for (var i = 0; i < count; i++){
-				characterService.config[i] = JSON.parse(JSON.stringify(characterService.defaultCharacter));
-				characterService.config[i].id = "sprite"+i;
+				characters[i] = JSON.parse(JSON.stringify(characterService.defaultCharacter));
+				characters[i].id = "sprite"+i;
 			}
+			
+			angular.copy(characters, characterService.config);
 			console.log(characterService.config);
 			timeForThisCommand = 1;
 
-		} else {
+		}*/ else {
 
-			/*if (typeof(currentLine.characterId) !== "undefined"){
+			if (typeof(currentLine.characterId) !== "undefined"){
 				var cId = currentLine.characterId.eval();
 				if ( typeof(characterService.config[cId]) === "undefined" ){
-					characterService.config[cId] = characterService.defaultCharacter;
+					characterService.config[cId] = angular.copy(characterService.defaultCharacter);
 					characterService.config[cId].id = "sprite"+cId;
 				}
-				$timeout(that.stepThrough, 1);
-				return;
-			}else{*/
-				// Execute currentLine (normal stuff)
-				timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
-				that.executeNoChain(currentLine);
-			//}
+			}
+				
+			// Execute currentLine (normal stuff)
+			timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
+			that.executeNoChain(currentLine);
 
 		}
 
@@ -464,6 +470,14 @@ VisualIDE
 				break;
 			case 'changeCostume': // costume 3
 				that.changeCostume(charId,cmd.costume);
+				break;
+			case 'showMessage':
+				var msg = cmd.text;
+				// Check if number is empty
+				if (Object.getOwnPropertyNames(cmd.number).length !== 0){
+					msg += "\n" + cmd.number.eval();
+				}
+				alert(msg);
 				break;
 		}
 		return pass;
