@@ -123,9 +123,9 @@
 			data-eval="return window.mouseY;">mouseY</li>
 			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
 			data-eval="return this.value * 1;">number <input type="text" size="2" name="value"></li>
-			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
-			data-eval="return this.varName;">variable <input type="text" size="2" name="varName"></li>
 			<!-- we need the * 1 to handle the 1 + 2 = 3 and not 1 + 2 = 12 case! -->
+			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
+			data-eval="if (typeof(window.userVariables[this.varName]) === 'undefined'){ alert(this.varName + ' is not defined. Assuming to be 0.'); window.userVariables[this.varName] = 0 }; return window.userVariables[this.varName];">variable <input type="text" size="2" name="varName"></li>			
 		</ul>
 	</div>
 

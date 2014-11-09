@@ -226,6 +226,8 @@ VisualIDE
 				window.mouseY = event.pageY;
 			});
 
+			// Clean user variables
+			window.userVariables = {};
 
 			// Initialize variables
 			stack = [];
@@ -351,6 +353,12 @@ VisualIDE
 		} else if  (currentLine.title == "setFps") {
 
 			defaultCommandsInterval = 1000 / currentLine.fps.eval();
+			timeForThisCommand = 1;
+
+		} else if  (currentLine.title == "setVariable") {
+
+			window.userVariables[currentLine.varName] = currentLine.varExp.eval();
+			timeForThisCommand = 1;
 
 		} else {
 
