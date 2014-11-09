@@ -127,10 +127,9 @@
 			<background-instance ng-controller="backgroundController">
 				<!-- only one background --> 
 			</background-instance>
-			<character-instance ng-controller="characterController">
-			</character-instance>
-			<character-instance ng-controller="characterController">
-			</character-instance>
+			<div ng-controller="characterController">
+				<character-instance ng-repeat="current in characters"></character-instance>
+			</div>
 			
 			<!-- /drawing board -->
 			<div class="navbar navbar-app navbar-absolute-bottom" style="border-radius:0px;">

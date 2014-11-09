@@ -101,7 +101,10 @@ VisualIDE
 	console.log('backgroundController initialized from app-controllers.js');
 	
 }])
-.controller('characterController', ['$scope', function($scope) {
+.controller('characterController', ['$scope', 'characterService', function($scope, characterService) {
+
+	$scope.characters = characterService.config;
+
 	console.log('characterController initialized from app-controllers.js');
 	$scope.click = function() {
 		alert("Pikaaaaaaa!!!");
@@ -146,6 +149,17 @@ VisualIDE
 	$scope.initInputElements();
 
 	$scope.commandData = [];
+
+	// Handle multiple character stuff
+	$scope.characterIdTemplate = "templates/command-character-id.htm";
+	$scope.$watch('showMultipleCharacterControl', function(newValue, oldValue) {
+		if (newValue) {
+			$("#workspace").addClass("characterIdSelectVisible");
+		}else{
+			$("#workspace").removeClass("characterIdSelectVisible");
+		}
+	});
+	// End of handle multiple character stuff
 
 	$scope.commandDraggableParams = {
         helper: "clone",
@@ -272,6 +286,11 @@ VisualIDE
 					var expName = $(children[j]).data("exp-name");
 					commandData[i][expName] = $scope.processExpressionElements($(children[j]));
 				}
+				if ( $(children[j]).prop("tagName") == "NG-INCLUDE"){
+					var expElement = $(children[j]).children("span").children("ul");
+					var expName = $(expElement).data("exp-name");
+					commandData[i][expName] = $scope.processExpressionElements($(expElement));
+				}
 			}
 
 			if (item.hasClass("sub-commands-allowed")) {
@@ -312,6 +331,12 @@ VisualIDE
 				var expName = $(children[i]).data("exp-name");
 				returnVal[expName] = $scope.processExpressionElements($(children[i]));
 			}
+
+			if ( $(children[i]).prop("tagName") == "NG-INCLUDE"){
+				var expElement = $(children[i]).children("span").children("ul");
+				var expName = $(expElement).data("exp-name");
+				returnVal[expName] = $scope.processExpressionElements($(expElement));
+			}
 		}
 		return returnVal;
 	}
@@ -340,6 +365,22 @@ VisualIDE
 					var expName = $(children[j]).data("exp-name");
 					$scope.populateExpressionElements(commandData[i][expName], $(children[j]));
 				}
+				if ( $(children[j]).prop("tagName") == "NG-INCLUDE"){
+					var expElement = $(children[j]).children("span").children("ul");
+					var expName = $(expElement).data("exp-name");
+
+					if (typeof(commandData[i]['characterId']) !== "undefined") {
+						$(expElement).html(""); // clear the existing dummy number 0 character
+						$scope.populateExpressionElements(commandData[i]['characterId'],$(expElement));
+
+						// flip switch to show controls for multiple characters, if there is more than one character
+						if ( commandData[i]['characterId'].expTitle == "number" && commandData[i]['characterId'].value == 0) {
+							this.showMultipleCharacterControl = false;
+						}else{
+							this.showMultipleCharacterControl = true;
+						}
+					}
+				}
 			}
 			if (item.hasClass("sub-commands-allowed")) {
 
@@ -354,8 +395,13 @@ VisualIDE
 	}
 
 	$scope.populateExpressionElements = function(commandData, rootElement){
+		if ( typeof(commandData) === "undefined" || typeof(rootElement) == "undefined" ) {
+			return;
+		}
+
 		var c = commandData;
-		var toolboxItem = $("#expr-toolbox").find("li[data-command|='"+c.expTitle+"']");
+		// We do #expr-toolbox > ul to prevent the command from finding the inner "hidden" characterId stuff
+		var toolboxItem = $("#expr-toolbox > ul").children("li[data-command|='"+c.expTitle+"']");
 		var item = $(toolboxItem).clone();
 		var children = item.children();
 		for (var j=0; j<children.length; j++){
@@ -364,9 +410,18 @@ VisualIDE
 				var attributeName = $(inputElement).attr("name");
 				$(inputElement).val(commandData[attributeName]);
 			}
-			if ( typeof($(children[j]).data("exp-name")) !== "undefined"){
+			if ( typeof($(inputElement).data("exp-name")) !== "undefined"){
 				var expName = $(children[j]).data("exp-name");
-				$scope.populateExpressionElements(commandData[expName], $(children[j]));
+				$scope.populateExpressionElements(commandData[expName], $(inputElement));
+			}
+			if ( $(inputElement).prop("tagName") == "NG-INCLUDE" ) {
+
+				if (typeof(commandData['characterId']) !== "undefined") {
+					var expName = 'characterId';
+					var characterElement = $($(inputElement).children("span").children("ul"));
+					characterElement.html("");
+					$scope.populateExpressionElements(commandData[expName], characterElement);
+				}
 			}
 		}
 		$(rootElement).append(item);

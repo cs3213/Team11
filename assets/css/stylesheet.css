@@ -87,6 +87,8 @@ li.command-element input, li.expr-element input, li.math-element input, li.cmp-e
 	color:#FFF;
 	margin-left: 10px;
 	font-weight: bold;
+	margin-top:10px;
+	margin-bottom:5px;
 }
 
 .command-trash-outer {
@@ -132,4 +134,19 @@ li.command-element input, li.expr-element input, li.math-element input, li.cmp-e
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.characterIdSelect{
+	display: none;
+}
+
+.command-options{
+
+	color:#FFF;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+#workspace.characterIdSelectVisible .characterIdSelect{
+	display: inline;
 }

@@ -1,19 +1,28 @@
 <div ng-controller="commandControl" class="noselect">
+	<div class="command-options">
+		<input type="checkbox" ng-model="showMultipleCharacterControl" ng-init="showMultipleCharacterControl=false" /> Show controls for multiple characters
+	</div>
 	<div class="command-toolbox toolbox" id="toolbox" style="float:left;">
 		<p>Actions</p>
 		<ul>
-			<li class="command-element" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">setX(
+			<li class="command-element" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">
+				<ng-include src="characterIdTemplate"></ng-include>setX(
 				<ul class="math-droppable" data-exp-name="x"></ul> 
-			)</li>
-			<li class="command-element" ui-jq="draggable" data-command="setY" ui-options="commandDraggableParams">setY(
+			)
+			<li class="command-element" ui-jq="draggable" data-command="setY" ui-options="commandDraggableParams">
+				<ng-include src="characterIdTemplate"></ng-include>setY(
 				<ul class="math-droppable" data-exp-name="y"></ul> 
 			)</li>
-			<li class="command-element" ui-jq="draggable" data-command="show" ui-options="commandDraggableParams">show</li>
-			<li class="command-element" ui-jq="draggable" data-command="hide" ui-options="commandDraggableParams">hide</li>
-			<li class="command-element" ui-jq="draggable" data-command="move" ui-options="commandDraggableParams">move(
+			<li class="command-element" ui-jq="draggable" data-command="show" ui-options="commandDraggableParams">
+				<ng-include src="characterIdTemplate"></ng-include>show</li>
+			<li class="command-element" ui-jq="draggable" data-command="hide" ui-options="commandDraggableParams">
+				<ng-include src="characterIdTemplate"></ng-include>hide</li>
+			<li class="command-element" ui-jq="draggable" data-command="move" ui-options="commandDraggableParams">
+				<ng-include src="characterIdTemplate"></ng-include>move(
 				<ul class="math-droppable" data-exp-name="count"></ul> 
 			)</li>
-			<li class="command-element" ui-jq="draggable" data-command="changeCostume" ui-options="commandDraggableParams">changeCostume <select name="costume">
+			<li class="command-element" ui-jq="draggable" data-command="changeCostume" ui-options="commandDraggableParams">
+				<ng-include src="characterIdTemplate"></ng-include>changeCostume <select name="costume">
 				<option value="pikachu">Default</option>
 				<option value="pikaspec">Spectacles</option>
 				<option value="pikasquirk">Squirk</option>
@@ -27,6 +36,12 @@
 				<option value="tree_bark">tree_bark</option>
 			</select></li>
 			<li class="command-element" ui-jq="draggable" data-command="setFps" ui-options="commandDraggableParams">setFPS(
+				<ul class="math-droppable" data-exp-name="fps"></ul>
+			)</li>
+			<li class="command-element" ui-jq="draggable" data-command="setNumCharacters" ui-options="commandDraggableParams">setNumCharacters(
+				<ul class="math-droppable" data-exp-name="count"></ul>
+			)</li>
+			<li class="command-element" ui-jq="draggable" data-command="showMessage" ui-options="commandDraggableParams">showMessage
 				<ul class="math-droppable" data-exp-name="fps"></ul>
 			)</li>
 			<li class="command-element" ui-jq="draggable" data-command="setVariable" ui-options="commandDraggableParams">set <input type="text" size="2" name="varName"> =
@@ -114,18 +129,22 @@
 		<p>Vars</p>
 		<ul>
 			<li class="var-element" ui-jq="draggable" data-command="spriteX" ui-options="expressionDraggableParams"
-			data-eval="return $('#0').offset().left - $('#playbackArea').parent().offset().left * 1;">spriteX</li>
+			data-eval="return $('#sprite' + this.characterId.eval()).offset().left - $('#playbackArea').parent().offset().left * 1;">
+				<ng-include src="characterIdTemplate"></ng-include>spriteX
+			</li>
 			<li class="var-element" ui-jq="draggable" data-command="spriteY" ui-options="expressionDraggableParams"
-			data-eval="return $('#0').offset().top;">spriteY</li>
+			data-eval="return $('#sprite' + this.characterId.eval()).offset().top;">
+				<ng-include src="characterIdTemplate"></ng-include>spriteY
+			</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseX" ui-options="expressionDraggableParams"
 			data-eval="return window.mouseX - $('#playbackArea').parent().offset().left * 1;">mouseX</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseY" ui-options="expressionDraggableParams"
 			data-eval="return window.mouseY;">mouseY</li>
 			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
-			data-eval="return this.value * 1;">number <input type="text" size="2" name="value"></li>
+			data-eval="return this.value * 1;">num <input type="text" size="2" name="value"></li>
 			<!-- we need the * 1 to handle the 1 + 2 = 3 and not 1 + 2 = 12 case! -->
 			<li class="var-element" ui-jq="draggable" data-command="variable" ui-options="expressionDraggableParams"
-			data-eval="if (typeof(window.userVariables[this.varName]) === 'undefined'){ alert(this.varName + ' is not defined. Assuming to be 0.'); window.userVariables[this.varName] = 0 }; return window.userVariables[this.varName];">variable <input type="text" size="2" name="varName"></li>			
+			data-eval="if (typeof(window.userVariables[this.varName]) === 'undefined'){ alert(this.varName + ' is not defined. Assuming to be 0.'); window.userVariables[this.varName] = 0 }; return window.userVariables[this.varName];">var <input type="text" size="2" name="varName"></li>			
 		</ul>
 	</div>
 

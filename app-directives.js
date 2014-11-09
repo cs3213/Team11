@@ -26,7 +26,7 @@ VisualIDE
 		templateUrl: './templates/character.php',
 		link: function(scope, elem, attr) {
 			console.log('characterInstance initialized from app-directives.js');
-			scope.current = characterService.config;
+			scope.current = characterService.config[scope.$index];
 			scope.availableCostumes = characterService.costumes;
 			console.log(scope.current);
 			scope.mouseClick = characterService.mouseClick;

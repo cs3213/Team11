@@ -53,16 +53,17 @@ VisualIDE
 	'pikasquirk',
 	'pikadead'
 	];
-	this.config = {
-		'id'		: 0,
+	this.defaultCharacter = {
+		'id'		: 'sprite0',
 		'name'		: 'default',
 		'scale'		: 50,
 		'source'	: this.costumes[0],
 	};
-	this.changeCostume = function($elem,$costumeId) {
+	this.config = [JSON.parse(JSON.stringify(this.defaultCharacter))];
+	this.changeCostume = function(id,$elem, $costumeId) {
 		//console.log('characterService.changeCostume() called');
 		// change the templateUrl of the elem to the dataCostume[costumeId]
-		this.config.source = $elem;
+		this.config[id].source = $elem;
 	};
 	this.create = function($id,$name,$scale,$costumeId) {
 		//console.log('characterService.create() called');
@@ -74,41 +75,41 @@ VisualIDE
 		};
 	};
 
-	this.reposition = function (xCoord, yCoord){
+	this.reposition = function (id,xCoord, yCoord){
 		//console.log("characterService.repositon() called");
-		this.config.left = xCoord;
-		this.config.top = yCoord;
+		this.config[id].left = xCoord;
+		this.config[id].top = yCoord;
 		currentX = xCoord;
 		currentY = yCoord;
 		return true;
 	};
 
-	this.setX = function(xCoord){
+	this.setX = function(id,xCoord){
 		//console.log("characterService.setX() called: " + xCoord);
-		this.config.left = xCoord;
+		this.config[id].left = xCoord;
 		currentX = xCoord;
 		return true;
 	};
 
-	this.setY = function(yCoord){
+	this.setY = function(id,yCoord){
 		//console.log("characterService.setY() called:" + yCoord);
-		this.config.top = yCoord;
+		this.config[id].top = yCoord;
 		currentY = yCoord;
 		return true;
 	};
 
-	this.hide = function(){
-		this.config.visibility = "hidden";	
+	this.hide = function(id){
+		this.config[id].visibility = "hidden";	
 		return true;
 	};
 
-	this.show = function(){
-		this.config.visibility = "visible";
+	this.show = function(id){
+		this.config[id].visibility = "visible";
 		return true;
 	};
 	//speed : pixels per second?
 	//convert to steps
-	this.move = function(speed, stepSize, x, y, newMovement){
+	this.move = function(id, speed, stepSize, x, y, newMovement){
 		////console.log("characterService.move function called");
 		////console.log("speed(pixels/s): " + speed);
 		////console.log("X to move: " + x);
@@ -149,8 +150,8 @@ VisualIDE
 		currentX = Number(currentX) + Number(unitX);
 		currentY = Number(currentY) + Number(unitY);
 
-		this.config.left = currentX;
-		this.config.top = currentY;
+		this.config[id].left = currentX;
+		this.config[id].top = currentY;
 
 		//if haven't reached destination
 		
@@ -163,7 +164,7 @@ VisualIDE
 				
 				function(){
 					////console.log("recursing");
-					that.move(speed, stepSize,x,y, false);
+					that.move(id, speed, stepSize,x,y, false);
 				}
 				
 				,nextExe);
@@ -360,11 +361,32 @@ VisualIDE
 			window.userVariables[currentLine.varName] = currentLine.varExp.eval();
 			timeForThisCommand = 1;
 
+		} else if  (currentLine.title == "setNumCharacters") {
+
+			var count = currentLine.count.eval();
+			characterService.config = new Array();
+			for (var i = 0; i < count; i++){
+				characterService.config[i] = JSON.parse(JSON.stringify(characterService.defaultCharacter));
+				characterService.config[i].id = "sprite"+i;
+			}
+			console.log(characterService.config);
+			timeForThisCommand = 1;
+
 		} else {
 
-			// Execute currentLine (normal stuff)
-			timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
-			that.executeNoChain(currentLine);
+			/*if (typeof(currentLine.characterId) !== "undefined"){
+				var cId = currentLine.characterId.eval();
+				if ( typeof(characterService.config[cId]) === "undefined" ){
+					characterService.config[cId] = characterService.defaultCharacter;
+					characterService.config[cId].id = "sprite"+cId;
+				}
+				$timeout(that.stepThrough, 1);
+				return;
+			}else{*/
+				// Execute currentLine (normal stuff)
+				timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
+				that.executeNoChain(currentLine);
+			//}
 
 		}
 
@@ -409,35 +431,39 @@ VisualIDE
 
 	this.executeNoChain = function(cmd){
 		//console.log(cmd);
+		if (typeof(cmd.characterId) !== "undefined") {
+			var charId = cmd.characterId.eval();
+		}
+
 		var pass = true;
 		switch(cmd.title){
 			case 'setX':
 				//console.log("setX: " + cmd.x);
 				var x = cmd.x.eval();
 				console.log(x);
-				characterService.setX(x);
+				characterService.setX(charId,x);
 				break;
 			case 'setY':
 				//console.log("setY: " + cmd.y);
-				characterService.setY(cmd.y.eval());
+				characterService.setY(charId,cmd.y.eval());
 				break;
 			case 'show':
 				//console.log("show");
-				characterService.show();
+				characterService.show(charId);
 				break;
 			case 'hide':
 				//console.log("hide");
-				characterService.hide();
+				characterService.hide(charId);
 				break;
 			case 'move':
 				//console.log("move:" + cmd.count);
-				characterService.move(speed,stepSize,cmd.count.eval(),0,true);
+				characterService.move(charId,speed,stepSize,cmd.count.eval(),0,true);
 				break;
 			case 'changeBackground': // background 1
 				that.changeBackground(cmd.costume);
 				break;
 			case 'changeCostume': // costume 3
-				that.changeCostume(cmd.costume);
+				that.changeCostume(charId,cmd.costume);
 				break;
 		}
 		return pass;
