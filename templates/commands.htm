@@ -26,6 +26,12 @@
 				<option value="stardust">stardust</option>
 				<option value="tree_bark">tree_bark</option>
 			</select></li>
+			<li class="command-element" ui-jq="draggable" data-command="setFps" ui-options="commandDraggableParams">setFPS(
+				<ul class="math-droppable" data-exp-name="fps"></ul>
+			)</li>
+			<li class="command-element" ui-jq="draggable" data-command="setVariable" ui-options="commandDraggableParams">set <input type="text" size="2" name="varName"> =
+				<ul class="math-droppable" data-exp-name="varExp"></ul> 
+			</li>
 			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">repeat(
 				<ul class="math-droppable" data-exp-name="count"></ul> 
 			)

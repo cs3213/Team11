@@ -348,7 +348,11 @@ VisualIDE
 			}else{
 				timeForThisCommand = 1;
 			}
-		}else {
+		} else if  (currentLine.title == "setFps") {
+
+			defaultCommandsInterval = 1000 / currentLine.fps.eval();
+
+		} else {
 
 			// Execute currentLine (normal stuff)
 			timeForThisCommand = that.calculateStatementExecutionTime(currentLine);
