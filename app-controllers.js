@@ -243,6 +243,8 @@ VisualIDE
         		$scope.updateCommandData($scope);
 
         		ui.helper.remove(); // hack to remove helper which for some reason gets stuck
+
+        		ui.draggable.data('dropped', true);
         	}
         };
 
@@ -257,6 +259,27 @@ VisualIDE
 			zIndex: 1000,
 			//connectToSortable: "#trash",
 			opacity: 0.7,
+			helper: "clone",
+			start: function( event, ui ){
+				if (event.shiftKey) {
+					$(event.target).data('cloned', true);
+				}else{
+					$(event.target).css('opacity','0');
+				}
+			},
+			stop: function( event, ui ){
+				if ($(event.target).data('cloned')) {
+
+				}else{
+					if ($(event.target).data('dropped')) {
+						$(event.target).remove();
+					}else{
+						$(event.target).css('opacity','1');
+					}
+				}
+				$(event.target).removeData('cloned');
+				$(event.target).removeData('dropped');
+			},
 		});
 
 		$scope.initInputElements();
