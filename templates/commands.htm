@@ -141,10 +141,6 @@
 			<li class="math-element" ui-jq="draggable" data-command="modulo" ui-options="expressionDraggableParams"
 			data-eval="return this.exp1.eval() % this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> mod <ul class="math-droppable" data-exp-name="exp2"></ul>
-			</li>
-			<li class="var-element" ui-jq="draggable" data-command="random" ui-options="expressionDraggableParams"
-			data-eval="return Math.floor(Math.random()*(this.exp2.eval()+1-this.exp1.eval())+this.exp1.eval());">
-				random number from <ul class="math-droppable" data-exp-name="exp1"></ul> to <ul class="math-droppable" data-exp-name="exp2"></ul>
 			</li>		
 		</ul>
 		<p>Vars</p>
@@ -173,6 +169,10 @@
 		</ul>
 		<p>Other</p>
 		<ul>
+			<li class="var-element" ui-jq="draggable" data-command="random" ui-options="expressionDraggableParams"
+			data-eval="return Math.floor(Math.random()*(this.exp2.eval()+1-this.exp1.eval())+this.exp1.eval());">
+				random number from <ul class="math-droppable" data-exp-name="exp1"></ul> to <ul class="math-droppable" data-exp-name="exp2"></ul>
+			</li>
 			<li class="cmp-element" ui-jq="draggable" data-command="touching" ui-options="expressionDraggableParams"
 			data-eval="var a = $('#sprite' + this.exp1.eval()); var b = $('#sprite' + this.exp2.eval());
 			var ax1 = a.offset().left; var ax2 = ax1 + a.width(); var ay1 = a.offset().top; var ay2 = ay1 + a.height();
