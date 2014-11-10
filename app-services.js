@@ -290,7 +290,7 @@ VisualIDE
 				lineNumber = 0;
 				currentBlock = that.deepClone(currentLine.commands);
 				
-				$timeout(that.stepThrough, 0);
+				that.stepThrough();
 				return;
 			}else{
 				timeForThisCommand = 0;
@@ -307,7 +307,7 @@ VisualIDE
 				lineNumber = 0;
 				currentBlock = that.deepClone(currentLine.commands);
 				
-				$timeout(that.stepThrough, 0);
+				that.stepThrough();
 				return;
 			}else{
 				timeForThisCommand = 0;
@@ -323,7 +323,7 @@ VisualIDE
 			lineNumber = 0;
 			currentBlock = that.deepClone(currentLine.commands);
 				
-			$timeout(that.stepThrough, 0);
+			that.stepThrough();
 			return;
 
 		} else if (currentLine.title == "for") {
@@ -344,7 +344,7 @@ VisualIDE
 				lineNumber = 0;
 				currentBlock = that.deepClone(currentLine.commands);
 				
-				$timeout(that.stepThrough, 0);
+				that.stepThrough();
 				return;
 			}else{
 				timeForThisCommand = 0;
@@ -365,7 +365,7 @@ VisualIDE
 					lineNumber = 0;
 					currentBlock = that.deepClone(currentLine.ifblock);
 					
-					$timeout(that.stepThrough, 0);
+					that.stepThrough();
 					return;
 				} else {
 
@@ -377,7 +377,7 @@ VisualIDE
 					lineNumber = 0;
 					currentBlock = that.deepClone(currentLine.elseblock);
 					
-					$timeout(that.stepThrough, 0);
+					that.stepThrough();
 					return;
 				}
 			}else{
