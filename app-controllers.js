@@ -17,6 +17,7 @@ VisualIDE
 		'move up 2',
 		'endrepeat'
 	];
+	$scope.playButtonLabel = "play";
 	$scope.play = function() {
 		//alert("todo!");
 		console.log("attempting to play");
@@ -27,6 +28,11 @@ VisualIDE
 		//var clonedCommandData = $.extend(true, [], $rootScope.commandData);
 
 		commandProcessor.play($rootScope.commandData);
+		if (commandProcessor.isPlaying()) {
+			$scope.playButtonLabel = "stop";
+		}else{
+			$scope.playButtonLabel = "play";
+		}
 	};
 	$scope.save = function() {
 		//alert("todo!");

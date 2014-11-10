@@ -208,6 +208,10 @@ VisualIDE
 	var lineNumber = 0;
 	var currentBlock;
 
+	this.isPlaying = function(){
+		return playing;
+	}
+
 	this.play = function(commands){
 		//console.log("making schedule");
 		//commandQueue = [];

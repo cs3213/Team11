@@ -135,7 +135,7 @@
 			<div class="navbar navbar-app navbar-absolute-bottom" style="border-radius:0px;">
 				<div class="btn-group justified" ng-controller="actionController">
 					<a ng-click="play()" class="btn btn-navbar">
-						<i class="fa fa-play fa-navbar"></i> PLAY
+						<i class="fa fa-{{playButtonLabel}} fa-navbar"></i> {{playButtonLabel}}
 					</a>
 				</div>
 			</div>
