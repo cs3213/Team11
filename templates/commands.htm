@@ -2,7 +2,7 @@
 	<div class="command-options">
 		<input type="checkbox" ng-model="showMultipleCharacterControl" ng-init="showMultipleCharacterControl=false" /> Show controls for multiple characters
 	</div>
-	<div class="command-toolbox toolbox" id="toolbox" style="float:left;">
+	<div class="command-toolbox toolbox" id="toolbox" style="position:fixed;">
 		<p>Actions</p>
 		<ul>
 			<li class="command-element" ui-jq="draggable" data-command="setX" ui-options="commandDraggableParams">
@@ -26,7 +26,12 @@
 				<option value="pikachu">Default</option>
 				<option value="pikaspec">Spectacles</option>
 				<option value="pikasquirk">Squirk</option>
-				<option value="pikadead">Dead</option>
+				<option value="pineapple">Pineapple</option>
+				<option value="plum">Plum</option>
+				<option value="pear">Pear</option>
+				<option value="lemon">Lemon</option>
+				<option value="cherry">Cherry</option>
+				<option value="basket">Basket</option>
 			</select>
 			</li>
 			<li class="command-element" ui-jq="draggable" data-command="changeBackground" ui-options="commandDraggableParams">changeBackground <select name="costume">
@@ -75,7 +80,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="expr-toolbox toolbox" id="expr-toolbox" style="float:left;">
+	<div class="expr-toolbox toolbox" id="expr-toolbox" style="position:fixed;left:120px;">
 		<p>Exp</p>
 		<ul>
 			<li class="expr-element" ui-jq="draggable" data-command="and" ui-options="expressionDraggableParams"
@@ -157,17 +162,17 @@
 		</ul>
 	</div>
 
-	<div style="float:left;" class="command-workspace-outer">
+	<div style="margin-left:200px;margin-top:20px;" class="command-workspace-outer">
 		<p>Workspace</p>
 		<ul id="workspace" class="command-workspace" ui-jq="sortable" ui-options="workspaceSortableParams">
 		</ul>
 	</div>
 
 	<div style="float:left;" class="command-trash-outer">
-		<div class="command-trash-icon">
+		<div class="command-trash-icon" style="position: fixed;left: 480px;top: 120px;">
+			<div id="trash" class="command-trash" ui-jq="sortable" ui-options="trashSortableParams">			
+			</div>
 			<i class="fa fa-trash"></i>
-		</div><br>
-		<div id="trash" class="command-trash" ui-jq="sortable" ui-options="trashSortableParams">			
-		</div>
+		</div>		
 	</div>
 </div>
