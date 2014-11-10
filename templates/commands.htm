@@ -170,6 +170,16 @@
 			<li class="var-element" ui-jq="draggable" data-command="variable" ui-options="expressionDraggableParams"
 			data-eval="if (typeof(window.userVariables[this.varName]) === 'undefined'){ alert(this.varName + ' is not defined. Assuming to be 0.'); window.userVariables[this.varName] = 0 }; return window.userVariables[this.varName];">var <input type="text" size="2" name="varName"></li>			
 		</ul>
+		<p>Other</p>
+		<ul>
+			<li class="cmp-element" ui-jq="draggable" data-command="touching" ui-options="expressionDraggableParams"
+			data-eval="var a = $('#sprite' + this.exp1.eval()); var b = $('#sprite' + this.exp2.eval());
+			var ax1 = a.offset().left; var ax2 = ax1 + a.width(); var ay1 = a.offset().top; var ay2 = ay1 + a.height();
+			var bx1 = b.offset().left; var bx2 = bx1 + b.width(); var by1 = b.offset().top; var by2 = by1 + b.height();
+			return ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1;">
+				sprite <ul class="math-droppable" data-exp-name="exp1"></ul> is touching sprite <ul class="math-droppable" data-exp-name="exp2"></ul>
+			</li>
+		</ul>
 	</div>
 	<script>
 	  $(function() {
