@@ -147,6 +147,31 @@ VisualIDE
 .controller('commandControl', function($scope, $element, $rootScope, $timeout) {
 	console.log("controller element", $element);
 
+	var cloneModeEnabled = false;
+	$scope.checkKey = function($event){
+		/*if ($event.shiftKey) {
+			if (cloneModeEnabled == false){
+				$("#workspace .command-element" ).draggable({
+					revert: "invalid",
+					zIndex: 1000,
+					//connectToSortable: "#trash",
+					opacity: 0.7,
+					connectToSortable: "#workspace, .command-inner-sortable",
+					helper: "clone",
+					start: function( event, ui ){
+						if (event.shiftKey) {					
+						}else{
+						}
+					}
+				});
+			}
+			cloneModeEnabled = true;
+		}else{
+			cloneModeEnabled = false;
+			$("#workspace .command-element" ).draggable("destroy");
+		}*/
+	};
+
 	$scope.initInputElements = function(){
 		$($element).find("input, select").change(function(){
 			$scope.updateCommandData($scope);
@@ -190,6 +215,9 @@ VisualIDE
 	        // We run this to apply the sortable to all the newly created sortables (created when you drag out the repeat)
 	        $scope.initInnerSortables();
 	        $scope.updateCommandData($scope);
+	    },
+	    stop: function (event, ui){
+	    	ui.item.data('dropped', true);
 	    }
 	};
 
@@ -281,6 +309,21 @@ VisualIDE
 				$(event.target).removeData('dropped');
 			},
 		});
+
+		/*
+		$("#workspace .command-element" ).draggable({
+			revert: "invalid",
+			zIndex: 1000,
+			//connectToSortable: "#trash",
+			opacity: 0.7,
+			connectToSortable: "#workspace, .command-inner-sortable",
+			helper: "clone",
+			start: function( event, ui ){
+				if (event.shiftKey) {					
+				}else{
+				}
+			},
+		});*/
 
 		$scope.initInputElements();
 	}
