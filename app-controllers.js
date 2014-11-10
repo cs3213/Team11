@@ -197,7 +197,18 @@ VisualIDE
 		connectWith: "#workspace, .command-inner-sortable, #trash",
 	    deactivate: function(event, ui){
 	    	$(event.target).html('');
-	    }
+	    },
+	    
+	};
+
+	$scope.trashDroppableParams = {
+		accept: "#workspace .expr-element, #workspace .math-element, #workspace .cmp-element, #workspace .var-element",
+	    tolerance: "pointer",
+	    drop: function( event, ui ) {
+			var dropped = ui.draggable;			
+			dropped.remove();
+    		ui.helper.remove();
+    	}
 	};
 
 	$scope.initInnerSortables = function(){
@@ -244,7 +255,7 @@ VisualIDE
 		$("#workspace .expr-element, #workspace .math-element, #workspace .cmp-element, #workspace .var-element" ).draggable({
 			revert: "invalid",
 			zIndex: 1000,
-			connectToSortable: "#trash",
+			//connectToSortable: "#trash",
 			opacity: 0.7,
 		});
 

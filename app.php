@@ -150,7 +150,7 @@
 		<script src="/assets/js/angular-ui-sortable.js"></script>
 		<script src="/assets/js/mobile-angular-ui.min.js"></script>
 		<script src="/assets/js/ui-utils.js"></script>
-		<script src="/assets/js/jquery.ui.touch-punch.js"></script>
+		<!--<script src="/assets/js/jquery.ui.touch-punch.js"></script>-->
 		<script src="/app.js"></script>
 		<script src="/app-controllers.js"></script>
 		<script src="/app-directives.js"></script>
