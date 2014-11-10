@@ -125,7 +125,11 @@
 			<li class="math-element" ui-jq="draggable" data-command="modulo" ui-options="expressionDraggableParams"
 			data-eval="return this.exp1.eval() % this.exp2.eval();">
 				<ul class="math-droppable" data-exp-name="exp1"></ul> mod <ul class="math-droppable" data-exp-name="exp2"></ul>
-			</li>			
+			</li>
+			<li class="var-element" ui-jq="draggable" data-command="random" ui-options="expressionDraggableParams"
+			data-eval="return Math.floor(Math.random()*(this.exp2.eval()+1-this.exp1.eval())+this.exp1.eval());">
+				random number from <ul class="math-droppable" data-exp-name="exp1"></ul> to <ul class="math-droppable" data-exp-name="exp2"></ul>
+			</li>		
 		</ul>
 		<p>Vars</p>
 		<ul>
@@ -141,6 +145,10 @@
 			data-eval="return window.mouseX - $('#playbackArea').parent().offset().left * 1;">mouseX</li>
 			<li class="var-element" ui-jq="draggable" data-command="mouseY" ui-options="expressionDraggableParams"
 			data-eval="return window.mouseY;">mouseY</li>
+			<li class="var-element" ui-jq="draggable" data-command="canvasWidth" ui-options="expressionDraggableParams"
+			data-eval="return $('#playbackArea').parent().width();">canvasWidth</li>
+			<li class="var-element" ui-jq="draggable" data-command="canvasHeight" ui-options="expressionDraggableParams"
+			data-eval="return $('#playbackArea').parent().height();">canvasHeight</li>
 			<li class="var-element" ui-jq="draggable" data-command="number" ui-options="expressionDraggableParams"
 			data-eval="return this.value * 1;">num <input type="text" size="2" name="value"></li>
 			<!-- we need the * 1 to handle the 1 + 2 = 3 and not 1 + 2 = 12 case! -->
