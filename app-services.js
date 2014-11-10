@@ -290,10 +290,10 @@ VisualIDE
 				lineNumber = 0;
 				currentBlock = that.deepClone(currentLine.commands);
 				
-				$timeout(that.stepThrough, 1);
+				$timeout(that.stepThrough, 0);
 				return;
 			}else{
-				timeForThisCommand = 1;
+				timeForThisCommand = 0;
 			}
 
 		} else if (currentLine.title == "while") {	
@@ -307,10 +307,10 @@ VisualIDE
 				lineNumber = 0;
 				currentBlock = that.deepClone(currentLine.commands);
 				
-				$timeout(that.stepThrough, 1);
+				$timeout(that.stepThrough, 0);
 				return;
 			}else{
-				timeForThisCommand = 1;
+				timeForThisCommand = 0;
 			}
 
 		} else if (currentLine.title == "forever") {
@@ -323,7 +323,7 @@ VisualIDE
 			lineNumber = 0;
 			currentBlock = that.deepClone(currentLine.commands);
 				
-			$timeout(that.stepThrough, 1);
+			$timeout(that.stepThrough, 0);
 			return;
 
 		} else if (currentLine.title == "for") {
@@ -344,10 +344,10 @@ VisualIDE
 				lineNumber = 0;
 				currentBlock = that.deepClone(currentLine.commands);
 				
-				$timeout(that.stepThrough, 1);
+				$timeout(that.stepThrough, 0);
 				return;
 			}else{
-				timeForThisCommand = 1;
+				timeForThisCommand = 0;
 			}
 
 		} else if  (currentLine.title == "ifelse") {
@@ -365,7 +365,7 @@ VisualIDE
 					lineNumber = 0;
 					currentBlock = that.deepClone(currentLine.ifblock);
 					
-					$timeout(that.stepThrough, 1);
+					$timeout(that.stepThrough, 0);
 					return;
 				} else {
 
@@ -377,21 +377,21 @@ VisualIDE
 					lineNumber = 0;
 					currentBlock = that.deepClone(currentLine.elseblock);
 					
-					$timeout(that.stepThrough, 1);
+					$timeout(that.stepThrough, 0);
 					return;
 				}
 			}else{
-				timeForThisCommand = 1;
+				timeForThisCommand = 0;
 			}
 		} else if  (currentLine.title == "setFps") {
 
 			defaultCommandsInterval = 1000 / currentLine.fps.eval();
-			timeForThisCommand = 1;
+			timeForThisCommand = 0;
 
 		} else if  (currentLine.title == "setVariable") {
 
 			window.userVariables[currentLine.varName] = currentLine.varExp.eval();
-			timeForThisCommand = 1;
+			timeForThisCommand = 0;
 
 		} /*else if  (currentLine.title == "setNumCharacters") {
 
