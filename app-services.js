@@ -322,6 +322,30 @@ VisualIDE
 			$timeout(that.stepThrough, 1);
 			return;
 
+		} else if (currentLine.title == "for") {
+			if ( typeof(currentLine.initialized) === "undefined" ) {
+				currentLine.initialized = true;
+				window.userVariables[currentLine.varName] = currentLine.exp1.eval();
+				window.userVariables[currentLine.varName]--;
+			}			
+			if (window.userVariables[currentLine.varName] < currentLine.exp2.eval()) {
+
+				window.userVariables[currentLine.varName]++;
+
+				stack.push({
+					lineNumber: lineNumber,
+					codeBlock: currentBlock,
+				});
+
+				lineNumber = 0;
+				currentBlock = that.deepClone(currentLine.commands);
+				
+				$timeout(that.stepThrough, 1);
+				return;
+			}else{
+				timeForThisCommand = 1;
+			}
+
 		} else if  (currentLine.title == "ifelse") {
 
 			if (!currentLine.executed){

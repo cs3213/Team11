@@ -53,6 +53,13 @@
 			<li class="command-element" ui-jq="draggable" data-command="setVariable" ui-options="commandDraggableParams">set <input type="text" size="2" name="varName"> =
 				<ul class="math-droppable" data-exp-name="varExp"></ul> 
 			</li>
+		</ul>
+		<p>Control</p>
+		<ul>
+			<li class="command-element sub-commands-allowed" data-command="forever" ui-jq="draggable" ui-options="commandDraggableParams">forever
+				<ul class="command-inner-sortable" data-name="commands">  
+				</ul>
+			</li>
 			<li class="command-element sub-commands-allowed" data-command="repeat" ui-jq="draggable" ui-options="commandDraggableParams">repeat(
 				<ul class="math-droppable" data-exp-name="count"></ul> 
 			)
@@ -64,8 +71,11 @@
 			)
 				<ul class="command-inner-sortable" data-name="commands">  
 				</ul>
-			</li>
-			<li class="command-element sub-commands-allowed" data-command="forever" ui-jq="draggable" ui-options="commandDraggableParams">forever
+			</li>			
+			<li class="command-element sub-commands-allowed" data-command="for" ui-jq="draggable" ui-options="commandDraggableParams">for
+				<input type="text" size="2" name="varName"> =
+				<ul class="math-droppable" data-exp-name="exp1"></ul> to
+				<ul class="math-droppable" data-exp-name="exp2"></ul>
 				<ul class="command-inner-sortable" data-name="commands">  
 				</ul>
 			</li>
@@ -161,6 +171,18 @@
 			data-eval="if (typeof(window.userVariables[this.varName]) === 'undefined'){ alert(this.varName + ' is not defined. Assuming to be 0.'); window.userVariables[this.varName] = 0 }; return window.userVariables[this.varName];">var <input type="text" size="2" name="varName"></li>			
 		</ul>
 	</div>
+	<script>
+	  $(function() {
+	    $( "#expr-toolbox" ).accordion({
+	    	heightStyle:"content",
+	    	header: "p",
+	    });
+	    $( "#toolbox" ).accordion({
+	    	heightStyle:"content",
+	    	header: "p",
+	    });
+	  });
+	  </script>
 
 	<div style="margin-left:200px;margin-top:20px;" class="command-workspace-outer">
 		<p>Workspace</p>

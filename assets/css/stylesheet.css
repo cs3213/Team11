@@ -38,6 +38,10 @@ li.expr-element, li.math-element, li.cmp-element, li.var-element {
 	font-size:8pt;
 }
 
+li.expr-element.ui-draggable-dragging, li.math-element.ui-draggable-dragging, li.cmp-element.ui-draggable-dragging, li.var-element.ui-draggable-dragging {
+	min-width:80px;
+}
+
 ul.expr-droppable, ul.math-droppable, ul.cmp-droppable, ul.var-droppable {
 	/*border:1px solid #AAA;*/
 	background-color:#AAA;
