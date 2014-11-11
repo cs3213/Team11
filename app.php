@@ -62,6 +62,9 @@
 								Drag n Drop Mode
 							</div>
 							<div class="btn-group pull-right">
+								<button class="btn btn-link" style="font-size:25px;padding:13px;" ng-click="newCode()">
+									<span class="fa fa-file"></span>
+								</button>
 								<button class="btn btn-link" style="font-size:25px;padding:13px;" ng-click="open()">
 									<span class="fa fa-folder-open"></span>
 								</button>

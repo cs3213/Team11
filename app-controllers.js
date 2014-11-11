@@ -34,6 +34,13 @@ VisualIDE
 			$scope.playButtonLabel = "play";
 		}
 	};
+
+	$scope.newCode = function() {
+		if (window.confirm("Do you really want to start a new code? This will erase your existing code in the workspace if it is not saved.")){
+			$rootScope.commandData = [];
+		}
+	}
+
 	$scope.save = function() {
 		//alert("todo!");
 		$http.get('/api/get').then(function(res){
@@ -146,6 +153,14 @@ VisualIDE
 })
 .controller('commandControl', function($scope, $element, $rootScope, $timeout) {
 	console.log("controller element", $element);
+
+	// Reload old code from localStorage
+	$timeout(function(){
+		if (typeof (window.localStorage.code) !== "undefined") {
+			$rootScope.commandData = JSON.parse(window.localStorage.code);
+			$rootScope.$apply();
+		}
+	},2000);
 
 	$scope.initInputElements = function(){
 		$($element).find("input, select").change(function(){
@@ -308,6 +323,11 @@ VisualIDE
 		$scope.$apply(function () {
 			$scope.commandData = $scope.processCommandElements(workspaceElement);
 			$rootScope.commandData = $scope.commandData;
+			try{
+				window.localStorage.code = JSON.stringify($rootScope.commandData);
+			}catch(e){
+				console.log(e);
+			}
 		});
 
 	}
