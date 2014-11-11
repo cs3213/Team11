@@ -246,8 +246,6 @@ VisualIDE
         		$scope.updateCommandData($scope);
 
         		ui.helper.remove(); // hack to remove helper which for some reason gets stuck
-
-        		ui.draggable.data('dropped', true);
         	}
         };
 
@@ -257,32 +255,22 @@ VisualIDE
 		$( "#workspace .math-droppable" ).droppable(droppableOptions);
 		$( "#workspace .math-droppable" ).droppable("option", "accept", ".math-element, .var-element");
 
-		$("#workspace .expr-element, #workspace .math-element, #workspace .cmp-element, #workspace .var-element" ).draggable({
+		// Code for cloning expressions when shift key held down
+		// http://stackoverflow.com/questions/3583635/jquery-ui-draggable-clone-if-ctrl-pressed-down
+		$("#workspace .expr-element, #workspace .math-element, #workspace .cmp-element, #workspace .var-element" ).mousedown(function(event) {
+			try{
+				$(this).draggable('option', { helper : 'original' });
+				if (event.shiftKey) {
+					$(this).draggable('option', { helper : 'clone' });
+				}
+			}catch(e){
+				console.log(e);
+			}
+		}).draggable({
 			revert: "invalid",
 			zIndex: 1000,
 			//connectToSortable: "#trash",
 			opacity: 0.7,
-			helper: "clone",
-			start: function( event, ui ){
-				if (event.shiftKey) {
-					$(event.target).data('cloned', true);
-				}else{
-					$(event.target).css('opacity','0');
-				}
-			},
-			stop: function( event, ui ){
-				if ($(event.target).data('cloned')) {
-
-				}else{
-					if ($(event.target).data('dropped')) {
-						$(event.target).remove();
-					}else{
-						$(event.target).css('opacity','1');
-					}
-				}
-				$(event.target).removeData('cloned');
-				$(event.target).removeData('dropped');
-			},
 		});
 
 		// Code for cloning commands when shift key held down
