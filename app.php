@@ -10,7 +10,7 @@
 			<div class="scrollable sidebar-scrollable">
 				<div class="scrollable-content">
 					<h2 class="app-name">VisualIDE</h2>
-					<div style="background-color:rgba(0,0,0,0.3);width:100%;">
+					<div style="background-color:rgba(0,0,0,0.3);width:100%;padding-left:10px;">
 						<a href="#/">MAIN</a> |
 						<a href="#/about">ABOUT</a> |
 						<a href="#/objectives">OBJECTIVES</a> | 

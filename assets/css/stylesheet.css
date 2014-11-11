@@ -154,3 +154,20 @@ li.command-element input, li.expr-element input, li.math-element input, li.cmp-e
 #workspace.characterIdSelectVisible .characterIdSelect{
 	display: inline;
 }
+
+.help-text {
+	color: #FFF;
+	margin:10px;
+}
+
+.help-text h2{
+	font-size: 14pt;
+}
+
+.help-text h3{
+	font-size: 12pt;
+}
+
+.help-text dd{
+	margin-bottom:10px;
+}
