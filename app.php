@@ -113,6 +113,13 @@
 					VisualIDE
 				</div>
 				<div class="btn-group pull-left">
+					<script>
+					function toggle(){
+						//console.log($('#leftSidebar').css('display') );
+						if ($('#leftSidebar').css('display') != 'none') { $('#leftSidebar').css('display', 'none'); $('.app').css('margin-left', '0px'); }
+						else { $('#leftSidebar').css('display', 'block'); $('.app').css('margin-left', '320px'); };
+					}
+					</script>
 					<div ng-click="toggle('leftSidebar')" class="btn btn-navbar sidebar-toggle">
 						<span class="fa fa-bars" style="font-size:20px;padding:15px;"></span>
 					</div>

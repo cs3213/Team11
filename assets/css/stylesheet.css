@@ -171,3 +171,14 @@ li.command-element input, li.expr-element input, li.math-element input, li.cmp-e
 .help-text dd{
 	margin-bottom:10px;
 }
+
+/* Force left sidebar to go away! */
+/*
+.has-sidebar-left:not(.sidebar-left-in) #leftSidebar {
+	display:none;
+}
+
+.has-sidebar-left:not(.sidebar-left-in) .app {
+	margin-left:0px;
+}
+*/
