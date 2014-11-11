@@ -147,31 +147,6 @@ VisualIDE
 .controller('commandControl', function($scope, $element, $rootScope, $timeout) {
 	console.log("controller element", $element);
 
-	var cloneModeEnabled = false;
-	$scope.checkKey = function($event){
-		/*if ($event.shiftKey) {
-			if (cloneModeEnabled == false){
-				$("#workspace .command-element" ).draggable({
-					revert: "invalid",
-					zIndex: 1000,
-					//connectToSortable: "#trash",
-					opacity: 0.7,
-					connectToSortable: "#workspace, .command-inner-sortable",
-					helper: "clone",
-					start: function( event, ui ){
-						if (event.shiftKey) {					
-						}else{
-						}
-					}
-				});
-			}
-			cloneModeEnabled = true;
-		}else{
-			cloneModeEnabled = false;
-			$("#workspace .command-element" ).draggable("destroy");
-		}*/
-	};
-
 	$scope.initInputElements = function(){
 		$($element).find("input, select").change(function(){
 			$scope.updateCommandData($scope);
@@ -310,20 +285,23 @@ VisualIDE
 			},
 		});
 
-		/*
-		$("#workspace .command-element" ).draggable({
-			revert: "invalid",
-			zIndex: 1000,
-			//connectToSortable: "#trash",
-			opacity: 0.7,
-			connectToSortable: "#workspace, .command-inner-sortable",
-			helper: "clone",
-			start: function( event, ui ){
-				if (event.shiftKey) {					
+		// Code for cloning commands when shift key held down
+		// http://stackoverflow.com/questions/3583635/jquery-ui-draggable-clone-if-ctrl-pressed-down
+		$("#workspace .command-element" ).mousedown(function(event) {
+			try{
+				$(this).draggable('option', { helper : 'original' });
+				if (event.shiftKey) {
+					$(this).draggable('option', { helper : 'clone' });
+					$(this).draggable('option', { connectToSortable : '#workspace' });
+					$(this).draggable('option', { disabled : false });
 				}else{
+					$(this).draggable('option', { connectToSortable : null });
+					$(this).draggable('option', { disabled : true });
 				}
-			},
-		});*/
+			}catch(e){
+				console.log(e);
+			}
+		}).draggable({ revert: "invalid" });
 
 		$scope.initInputElements();
 	}
