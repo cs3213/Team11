@@ -182,3 +182,7 @@ li.command-element input, li.expr-element input, li.math-element input, li.cmp-e
 	margin-left:0px;
 }
 */
+
+.command-toolbox, .expr-toolbox {
+	z-index: 99;
+}
